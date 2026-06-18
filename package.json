@@ -21,6 +21,9 @@
     "gradle:build": "gradlew build",
     "gradle:test": "gradlew test",
     "gradle:check": "gradlew check",
+    "kotlin:lint": "gradlew ktlintCheck",
+    "kotlin:format": "gradlew ktlintFormat",
+    "kotlin:style": "gradlew ktlintFormat ktlintCheck",
     "commit": "cz"
   },
   "config": {
