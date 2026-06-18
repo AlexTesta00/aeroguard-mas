@@ -1,0 +1,43 @@
+{
+  "name": "emergency_priority",
+  "maxTicks": 14,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "ITY900",
+      "x": 0,
+      "y": 0,
+      "altitude": 30000,
+      "speed": 1,
+      "priority": "emergency",
+      "emergency": true,
+      "emergencyStatus": "low_fuel",
+      "route": [
+        {
+          "name": "E1",
+          "x": 6,
+          "y": 6
+        }
+      ]
+    },
+    {
+      "id": "KLM321",
+      "x": 12,
+      "y": 0,
+      "altitude": 30000,
+      "speed": 1,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "E2",
+          "x": 6,
+          "y": 6
+        }
+      ]
+    }
+  ]
+}

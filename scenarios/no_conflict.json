@@ -1,0 +1,42 @@
+{
+  "name": "no_conflict",
+  "maxTicks": 10,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "BAW100",
+      "x": 0,
+      "y": 0,
+      "altitude": 30000,
+      "speed": 1,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "N1",
+          "x": 10,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "id": "AFR200",
+      "x": 0,
+      "y": 20,
+      "altitude": 34000,
+      "speed": 1,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "N2",
+          "x": 10,
+          "y": 20
+        }
+      ]
+    }
+  ]
+}
