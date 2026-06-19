@@ -24,7 +24,7 @@ dependencies {
     implementation("it.unibo.tuprolog:solve-classic-jvm:1.1.5")
     implementation("it.unibo.tuprolog:parser-theory-jvm:1.1.5")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.14.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:6.1.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
