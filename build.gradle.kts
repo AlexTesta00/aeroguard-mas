@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.3.21"
+    kotlin("jvm") version "2.4.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.4.0"
     application
@@ -24,7 +24,7 @@ dependencies {
     implementation("it.unibo.tuprolog:solve-classic-jvm:1.1.5")
     implementation("it.unibo.tuprolog:parser-theory-jvm:1.1.5")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.14.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.14.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
