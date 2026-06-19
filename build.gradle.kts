@@ -21,6 +21,8 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+    implementation("it.unibo.tuprolog:solve-classic-jvm:1.1.5")
+    implementation("it.unibo.tuprolog:parser-theory-jvm:1.1.5")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.14.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -28,6 +30,14 @@ dependencies {
 
 kotlin {
     jvmToolchain(25)
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir("src/main/prolog")
+        }
+    }
 }
 
 application {
