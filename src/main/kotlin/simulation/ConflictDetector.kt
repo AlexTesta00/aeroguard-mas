@@ -4,9 +4,12 @@ import domain.Aircraft
 import domain.Conflict
 import domain.ConflictType
 import domain.SimulationState
+import reasoning.SafetyReasoner
+import reasoning.TuPrologSafetyReasoner
 
 class ConflictDetector(
     private val aircraftMover: AircraftMover = AircraftMover(),
+    private val safetyReasoner: SafetyReasoner = TuPrologSafetyReasoner.fromClasspath(),
 ) {
     fun detectCurrentConflicts(state: SimulationState): List<Conflict> {
         val aircraft = state.aircraft.values.sortedBy { it.id }
@@ -64,21 +67,21 @@ class ConflictDetector(
         val horizontalDistance = first.position.distanceTo(second.position)
         val verticalDistance = first.flightLevel.verticalDistanceTo(second.flightLevel)
 
-        val horizontalUnsafe = horizontalDistance < state.separation.horizontal
-        val verticalUnsafe = verticalDistance < state.separation.verticalFeet
+        val candidate =
+            Conflict(
+                id = "current-${state.tick}-${first.id}-${second.id}",
+                tick = state.tick,
+                aircraftIds = setOf(first.id, second.id),
+                type = ConflictType.HORIZONTAL_SEPARATION_LOSS,
+                horizontalDistance = horizontalDistance,
+                verticalDistanceFeet = verticalDistance,
+            )
 
-        if (!horizontalUnsafe || !verticalUnsafe) {
-            return null
+        return if (safetyReasoner.isConflictUnsafe(candidate, state)) {
+            candidate
+        } else {
+            null
         }
-
-        return Conflict(
-            id = "current-${state.tick}-${first.id}-${second.id}",
-            tick = state.tick,
-            aircraftIds = setOf(first.id, second.id),
-            type = ConflictType.HORIZONTAL_SEPARATION_LOSS,
-            horizontalDistance = horizontalDistance,
-            verticalDistanceFeet = verticalDistance,
-        )
     }
 
     private fun advanceStateWithoutReasoning(state: SimulationState): SimulationState {
