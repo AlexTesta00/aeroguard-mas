@@ -1,9 +1,15 @@
 package cli
 
 import domain.Conflict
+import domain.FlightLevel
+import domain.Maneuver
+import domain.ManeuverType
 import domain.SimulationState
 import integration.JsonScenarioLoader
 import integration.ScenarioLoadingException
+import reasoning.SafetyReasoner
+import reasoning.TuPrologSafetyReasoner
+import simulation.ConflictDetector
 import simulation.SimulationEngine
 import java.nio.file.Path
 import kotlin.system.exitProcess
@@ -65,7 +71,7 @@ fun main(args: Array<String>) {
     val scenarioPath = options.scenarioPath
     if (scenarioPath == null) {
         println("Run tests with: ./gradlew test")
-        println("Run a scenario with: ./gradlew run --args=\"--scenario scenarios/simple_conflict.json\"")
+        println("Run a scenario with: ./gradlew run --args=\"--scenario scenarios/simple_conflict.json --explain\"")
         return
     }
 
@@ -104,7 +110,14 @@ fun main(args: Array<String>) {
         println("Dynamic events: ${scenario.dynamicEvents.size}")
     }
 
-    val engine = SimulationEngine(predictionHorizonTicks = 6)
+    val reasoner = TuPrologSafetyReasoner.fromClasspath()
+    val detector = ConflictDetector(safetyReasoner = reasoner)
+    val engine =
+        SimulationEngine(
+            conflictDetector = detector,
+            predictionHorizonTicks = 6,
+        )
+
     val result = engine.run(scenario)
 
     println()
@@ -126,8 +139,20 @@ fun main(args: Array<String>) {
     println("Final state:")
     printFinalState(result.finalState)
 
+    println()
+    println("Symbolic reasoning summary:")
+    printPrioritySummary(result.finalState, reasoner)
+    printSampleManeuverCheck(result.finalState, reasoner)
+
     if (options.explain) {
         println()
+        println("Symbolic explanations:")
+        reasoner.explainDecision("unsafe_pair").forEach { explanation ->
+            println("- $explanation")
+        }
+        reasoner.explainDecision("maneuver_climb_allowed").forEach { explanation ->
+            println("- $explanation")
+        }
     }
 }
 
@@ -175,4 +200,42 @@ private fun printFinalState(state: SimulationState) {
                     "activeWaypoint=${aircraft.activeWaypoint.name}",
             )
         }
+}
+
+private fun printPrioritySummary(
+    state: SimulationState,
+    reasoner: SafetyReasoner,
+) {
+    println("Aircraft priorities from Prolog:")
+    state.aircraft.values
+        .sortedBy { it.id }
+        .forEach { aircraft ->
+            println("- ${aircraft.id}: priorityScore=${reasoner.priorityOf(aircraft.id, state)}")
+        }
+}
+
+private fun printSampleManeuverCheck(
+    state: SimulationState,
+    reasoner: SafetyReasoner,
+) {
+    val firstAircraft =
+        state.aircraft.values
+            .sortedBy { it.id }
+            .firstOrNull() ?: return
+    val targetAltitude = firstAircraft.flightLevel.feet + 2000
+
+    val maneuver =
+        Maneuver(
+            aircraftId = firstAircraft.id,
+            type = ManeuverType.CLIMB,
+            targetFlightLevel = FlightLevel(targetAltitude),
+            reason = "Sample symbolic maneuver feasibility check",
+        )
+
+    val allowed = reasoner.isManeuverAllowed(firstAircraft.id, maneuver, state)
+
+    println(
+        "Sample maneuver feasibility: " +
+            "climb(${firstAircraft.id}, $targetAltitude) allowed=$allowed",
+    )
 }
