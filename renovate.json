@@ -1,9 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "baseBranchPatterns": ["develop"],
-  "automerge": false,
-  "prCreation": "immediate",
   "dependencyDashboard": true,
+  "dependencyDashboardApproval": false,
+  "prCreation": "immediate",
+  "automerge": false,
   "separateMajorMinor": true,
   "separateMinorPatch": true,
   "separateMultipleMajor": true,
@@ -19,7 +20,17 @@
     {
       "description": "Disable automerge for every dependency update",
       "matchPackageNames": ["*"],
-      "automerge": false
+      "automerge": false,
+      "dependencyDashboardApproval": false
+    },
+    {
+      "description": "Label Kotlin and KotlinX updates",
+      "matchPackageNames": [
+        "org.jetbrains.kotlin**",
+        "org.jetbrains.kotlinx**"
+      ],
+      "labels": ["dependencies", "kotlin"],
+      "dependencyDashboardApproval": false
     }
   ]
 }
