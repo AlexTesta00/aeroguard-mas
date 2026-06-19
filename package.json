@@ -1,0 +1,90 @@
+{
+  "name": "aeroguard-mas",
+  "version": "0.0.1",
+  "description": "AeroGuard MAS",
+  "homepage": "https://github.com/AlexTesta00/aeroguard-mas#readme",
+  "bugs": {
+    "url": "https://github.com/AlexTesta00/aeroguard-mas/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexTesta00/aeroguard-mas.git"
+  },
+  "license": "MIT",
+  "author": "Alex Testa",
+  "type": "commonjs",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "release": "semantic-release",
+    "commitlint": "commitlint --edit",
+    "gradle:build": "gradlew build",
+    "gradle:test": "gradlew test",
+    "gradle:check": "gradlew check",
+    "kotlin:lint": "gradlew ktlintCheck",
+    "kotlin:format": "gradlew ktlintFormat",
+    "kotlin:style": "gradlew ktlintFormat ktlintCheck",
+    "commit": "cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
+    "@commitlint/cz-commitlint": "^21.0.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "commitizen": "^4.3.1",
+    "husky": "^9.1.7",
+    "semantic-release": "^25.0.2"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "tagFormat": "v${version}",
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      "@semantic-release/changelog",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md",
+            "package.json",
+            "package-lock.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {}
+      ]
+    ]
+  }
+}

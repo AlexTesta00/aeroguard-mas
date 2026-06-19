@@ -1,0 +1,3 @@
+npm run kotlin:format
+npm run kotlin:lint
+npm run gradle:test

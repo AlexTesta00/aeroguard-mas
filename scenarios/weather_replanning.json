@@ -1,0 +1,63 @@
+{
+  "name": "weather_replanning",
+  "maxTicks": 18,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "RYR700",
+      "x": 0,
+      "y": 0,
+      "altitude": 30000,
+      "speed": 1,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "WX_ENTRY",
+          "x": 5,
+          "y": 5
+        },
+        {
+          "name": "WX_EXIT",
+          "x": 10,
+          "y": 10
+        }
+      ]
+    },
+    {
+      "id": "SWR800",
+      "x": 10,
+      "y": 0,
+      "altitude": 32000,
+      "speed": 1,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "SAFE1",
+          "x": 10,
+          "y": 10
+        }
+      ]
+    }
+  ],
+  "weatherZones": [
+    {
+      "id": "WX1",
+      "x": 5,
+      "y": 5,
+      "radius": 2.5,
+      "activeFromTick": 3
+    }
+  ],
+  "dynamicEvents": [
+    {
+      "tick": 3,
+      "type": "activate_weather_zone",
+      "targetId": "WX1"
+    }
+  ]
+}

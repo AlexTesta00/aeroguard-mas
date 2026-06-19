@@ -1,0 +1,66 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "baseBranches": [
+    "develop"
+  ],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "automerge": false,
+  "dependencyDashboard": true,
+  "enabledManagers": [
+    "gradle",
+    "gradle-wrapper",
+    "npm",
+    "github-actions"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "gradle"
+      ],
+      "groupName": "Gradle dependencies",
+      "commitMessageTopic": "Gradle dependencies",
+      "labels": [
+        "dependencies",
+        "gradle"
+      ]
+    },
+    {
+      "matchManagers": [
+        "gradle-wrapper"
+      ],
+      "groupName": "Gradle Wrapper",
+      "commitMessageTopic": "Gradle Wrapper",
+      "labels": [
+        "dependencies",
+        "gradle"
+      ]
+    },
+    {
+      "matchManagers": [
+        "npm"
+      ],
+      "groupName": "Node.js dependencies",
+      "commitMessageTopic": "Node.js dependencies",
+      "labels": [
+        "dependencies",
+        "node"
+      ]
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions",
+      "commitMessageTopic": "GitHub Actions",
+      "labels": [
+        "dependencies",
+        "github-actions"
+      ]
+    }
+  ]
+}

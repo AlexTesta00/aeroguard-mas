@@ -1,0 +1,42 @@
+{
+  "name": "simple_conflict",
+  "maxTicks": 12,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "AZA123",
+      "x": 0,
+      "y": 0,
+      "altitude": 30000,
+      "speed": 1,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "W1",
+          "x": 5,
+          "y": 5
+        }
+      ]
+    },
+    {
+      "id": "DLH456",
+      "x": 10,
+      "y": 0,
+      "altitude": 30000,
+      "speed": 1,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "W2",
+          "x": 5,
+          "y": 5
+        }
+      ]
+    }
+  ]
+}
