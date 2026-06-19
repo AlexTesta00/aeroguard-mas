@@ -30,6 +30,10 @@ kotlin {
     jvmToolchain(25)
 }
 
+application {
+    mainClass.set("cli.AeroGuardCliKt")
+}
+
 tasks.test {
     useJUnitPlatform()
 
