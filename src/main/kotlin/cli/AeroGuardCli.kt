@@ -1,7 +1,10 @@
 package cli
 
+import domain.Conflict
+import domain.SimulationState
 import integration.JsonScenarioLoader
 import integration.ScenarioLoadingException
+import simulation.SimulationEngine
 import java.nio.file.Path
 import kotlin.system.exitProcess
 
@@ -9,7 +12,7 @@ object AppInfo {
     const val NAME: String = "AeroGuard-MAS"
     const val VERSION: String = "0.1.0-SNAPSHOT"
 
-    fun banner(): String = "$NAME $VERSION — Multi-Agent Airspace Conflict Manager"
+    fun banner(): String = "$NAME $VERSION - Multi-Agent Airspace Conflict Manager"
 }
 
 data class CliOptions(
@@ -61,9 +64,8 @@ fun main(args: Array<String>) {
 
     val scenarioPath = options.scenarioPath
     if (scenarioPath == null) {
-        println("Scenario loader are ready.")
         println("Run tests with: ./gradlew test")
-        println("Load a scenario with: ./gradlew run --args=\"--scenario scenarios/simple_conflict.json\"")
+        println("Run a scenario with: ./gradlew run --args=\"--scenario scenarios/simple_conflict.json\"")
         return
     }
 
@@ -90,7 +92,7 @@ fun main(args: Array<String>) {
                 "speed=${aircraft.velocity.horizontalUnitsPerTick}, " +
                 "priority=${aircraft.priority}, " +
                 "emergency=${aircraft.emergencyStatus}, " +
-                "nextWaypoint=${aircraft.route.firstWaypoint.name}",
+                "nextWaypoint=${aircraft.activeWaypoint.name}",
         )
     }
 
@@ -102,9 +104,75 @@ fun main(args: Array<String>) {
         println("Dynamic events: ${scenario.dynamicEvents.size}")
     }
 
+    val engine = SimulationEngine(predictionHorizonTicks = 6)
+    val result = engine.run(scenario)
+
+    println()
+    println("Simulation completed.")
+    println("Ticks simulated: ${scenario.maxTicks}")
+    println("Stored states: ${result.states.size}")
+
+    printConflictSummary(
+        title = "Current conflicts detected",
+        conflicts = result.currentConflicts,
+    )
+
+    printConflictSummary(
+        title = "Predicted conflicts generated",
+        conflicts = result.predictedConflicts,
+    )
+
+    println()
+    println("Final state:")
+    printFinalState(result.finalState)
+
     if (options.explain) {
-        println("Explain mode requested.")
+        println()
+    }
+}
+
+private fun printConflictSummary(
+    title: String,
+    conflicts: List<Conflict>,
+) {
+    println()
+    println("$title: ${conflicts.size}")
+
+    if (conflicts.isEmpty()) {
+        println("- none")
+        return
     }
 
-    println("Scenario loading completed.")
+    conflicts.take(10).forEach { conflict ->
+        val predictionText =
+            conflict.predictedAtTick
+                ?.let { ", predictedAtTick=$it" }
+                .orEmpty()
+
+        println(
+            "- tick=${conflict.tick}$predictionText, " +
+                "type=${conflict.type}, " +
+                "aircraft=${conflict.aircraftIds.sorted()}, " +
+                "horizontal=${"%.2f".format(conflict.horizontalDistance)}, " +
+                "vertical=${conflict.verticalDistanceFeet}ft",
+        )
+    }
+
+    if (conflicts.size > 10) {
+        println("- ... ${conflicts.size - 10} more")
+    }
+}
+
+private fun printFinalState(state: SimulationState) {
+    state.aircraft.values
+        .sortedBy { it.id }
+        .forEach { aircraft ->
+            println(
+                "- ${aircraft.id}: " +
+                    "pos=(${String.format("%.2f", aircraft.position.x)}, " +
+                    "${String.format("%.2f", aircraft.position.y)}), " +
+                    "altitude=${aircraft.flightLevel.feet}, " +
+                    "activeWaypoint=${aircraft.activeWaypoint.name}",
+            )
+        }
 }
