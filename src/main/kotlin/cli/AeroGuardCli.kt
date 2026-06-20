@@ -6,6 +6,8 @@ import domain.Maneuver
 import domain.ManeuverType
 import domain.ResolutionPlan
 import domain.SimulationState
+import integration.JasonAgentCatalog
+import integration.JasonAgentSmokeAnalyzer
 import integration.JsonScenarioLoader
 import integration.ScenarioLoadingException
 import planning.StripsResolutionPlanner
@@ -70,9 +72,13 @@ fun main(args: Array<String>) {
             exitProcess(1)
         }
 
+    printJasonSummary()
+
     val scenarioPath = options.scenarioPath
     if (scenarioPath == null) {
+        println()
         println("Run tests with: ./gradlew test")
+        println("Run Jason smoke check with: ./gradlew runJasonSmoke")
         println("Run a scenario with: ./gradlew run --args=\"--scenario scenarios/simple_conflict.json --explain\"")
         return
     }
@@ -85,6 +91,7 @@ fun main(args: Array<String>) {
             exitProcess(1)
         }
 
+    println()
     println("Loaded scenario: ${scenario.name}")
     println("Max ticks: ${scenario.maxTicks}")
     println(
@@ -180,6 +187,17 @@ fun main(args: Array<String>) {
             println("- ${resolutionPlan.explanation}")
         }
     }
+}
+
+private fun printJasonSummary() {
+    val report =
+        JasonAgentSmokeAnalyzer()
+            .analyze(JasonAgentCatalog(Path.of("src/main/agents")).loadRequiredAgents())
+
+    println("Jason agents:")
+    println("- smokeStatus=${if (report.passed) "PASS" else "FAIL"}")
+    println("- agents=${report.agentSnapshots.map { it.agentName }}")
+    println("- delegations=${report.delegations.map { "${it.from}->${it.to}/${it.performative}" }}")
 }
 
 private fun printConflictSummary(
