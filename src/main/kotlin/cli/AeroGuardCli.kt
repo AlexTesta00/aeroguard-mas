@@ -4,9 +4,13 @@ import domain.Conflict
 import domain.FlightLevel
 import domain.Maneuver
 import domain.ManeuverType
+import domain.ResolutionPlan
 import domain.SimulationState
+import integration.JasonAgentCatalog
+import integration.JasonAgentSmokeAnalyzer
 import integration.JsonScenarioLoader
 import integration.ScenarioLoadingException
+import planning.StripsResolutionPlanner
 import reasoning.SafetyReasoner
 import reasoning.TuPrologSafetyReasoner
 import simulation.ConflictDetector
@@ -68,9 +72,13 @@ fun main(args: Array<String>) {
             exitProcess(1)
         }
 
+    printJasonSummary()
+
     val scenarioPath = options.scenarioPath
     if (scenarioPath == null) {
+        println()
         println("Run tests with: ./gradlew test")
+        println("Run Jason smoke check with: ./gradlew runJasonSmoke")
         println("Run a scenario with: ./gradlew run --args=\"--scenario scenarios/simple_conflict.json --explain\"")
         return
     }
@@ -83,6 +91,7 @@ fun main(args: Array<String>) {
             exitProcess(1)
         }
 
+    println()
     println("Loaded scenario: ${scenario.name}")
     println("Max ticks: ${scenario.maxTicks}")
     println(
@@ -144,6 +153,26 @@ fun main(args: Array<String>) {
     printPrioritySummary(result.finalState, reasoner)
     printSampleManeuverCheck(result.finalState, reasoner)
 
+    val resolutionPlanner = StripsResolutionPlanner(reasoner)
+    val conflictForPlanning =
+        result.predictedConflicts.firstOrNull()
+            ?: result.currentConflicts.firstOrNull()
+
+    val resolutionPlan =
+        conflictForPlanning?.let { conflict ->
+            val planningState =
+                result.states.firstOrNull { it.tick == conflict.tick }
+                    ?: result.finalState
+
+            resolutionPlanner.planResolution(
+                conflict = conflict,
+                state = planningState,
+            )
+        }
+
+    println()
+    printResolutionPlan(resolutionPlan)
+
     if (options.explain) {
         println()
         println("Symbolic explanations:")
@@ -153,7 +182,22 @@ fun main(args: Array<String>) {
         reasoner.explainDecision("maneuver_climb_allowed").forEach { explanation ->
             println("- $explanation")
         }
+
+        if (resolutionPlan != null) {
+            println("- ${resolutionPlan.explanation}")
+        }
     }
+}
+
+private fun printJasonSummary() {
+    val report =
+        JasonAgentSmokeAnalyzer()
+            .analyze(JasonAgentCatalog(Path.of("src/main/agents")).loadRequiredAgents())
+
+    println("Jason agents:")
+    println("- smokeStatus=${if (report.passed) "PASS" else "FAIL"}")
+    println("- agents=${report.agentSnapshots.map { it.agentName }}")
+    println("- delegations=${report.delegations.map { "${it.from}->${it.to}/${it.performative}" }}")
 }
 
 private fun printConflictSummary(
@@ -239,3 +283,50 @@ private fun printSampleManeuverCheck(
             "climb(${firstAircraft.id}, $targetAltitude) allowed=$allowed",
     )
 }
+
+private fun printResolutionPlan(plan: ResolutionPlan?) {
+    println("Resolution plan candidate:")
+
+    if (plan == null) {
+        println("- none")
+        return
+    }
+
+    println("- planId=${plan.id}")
+    println("- conflictId=${plan.conflictId}")
+    println("- maneuvers=${plan.maneuvers.map { maneuver -> formatManeuver(maneuver) }}")
+    println("- explanation=${plan.explanation}")
+}
+
+private fun formatManeuver(maneuver: Maneuver): String =
+    when (maneuver.type) {
+        ManeuverType.CLIMB ->
+            "climb(${maneuver.aircraftId},${maneuver.targetFlightLevel?.feet})"
+
+        ManeuverType.DESCEND ->
+            "descend(${maneuver.aircraftId},${maneuver.targetFlightLevel?.feet})"
+
+        ManeuverType.SLOW_DOWN ->
+            "slow_down(${maneuver.aircraftId})"
+
+        ManeuverType.RESUME_SPEED ->
+            "resume_speed(${maneuver.aircraftId})"
+
+        ManeuverType.ENTER_HOLDING ->
+            "enter_holding(${maneuver.aircraftId})"
+
+        ManeuverType.CONTINUE_ROUTE ->
+            "continue_route(${maneuver.aircraftId})"
+
+        ManeuverType.TURN_LEFT ->
+            "turn_left(${maneuver.aircraftId})"
+
+        ManeuverType.TURN_RIGHT ->
+            "turn_right(${maneuver.aircraftId})"
+
+        ManeuverType.AVOID_WEATHER_ZONE ->
+            "avoid_weather_zone(${maneuver.aircraftId})"
+
+        ManeuverType.REROUTE_TO_WAYPOINT ->
+            "reroute_to_waypoint(${maneuver.aircraftId})"
+    }
