@@ -1,3 +1,14 @@
+## [0.2.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.1.0...v0.2.0) (2026-06-22)
+
+### Features
+
+* **cli:** parse events output option ([4ed27fc](https://github.com/AlexTesta00/aeroguard-mas/commit/4ed27fc5cef39953d5119da2702fd5a53de12d69))
+* **events:** added simulation event model ([0137fdd](https://github.com/AlexTesta00/aeroguard-mas/commit/0137fdd24480341d2d63a9f55abd754cc6819580))
+* **events:** added simulation event sinks ([c71aeb7](https://github.com/AlexTesta00/aeroguard-mas/commit/c71aeb7b9b86c3ee247c168260c3e4d31304e84b))
+* **events:** record simulation runs as events ([b9d5c0d](https://github.com/AlexTesta00/aeroguard-mas/commit/b9d5c0df0c1e04845be0e0c24887dec89ff21f93))
+* **events:** serialize simulation events to JSON ([74eefe2](https://github.com/AlexTesta00/aeroguard-mas/commit/74eefe25ffde2a522fb20dae07c8592c47e60845))
+* **explanation:** add decision explanation service ([81b8da1](https://github.com/AlexTesta00/aeroguard-mas/commit/81b8da10c0e670f3dd7036a5a7651cfe225bf251))
+
 ## [0.1.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.0.1...v0.1.0) (2026-06-20)
 
 ### Features
