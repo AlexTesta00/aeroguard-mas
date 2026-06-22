@@ -1,0 +1,11 @@
+{"tick":0,"type":"aircraft_state","aircraft":"SAS111","x":0.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":0,"type":"aircraft_state","aircraft":"IBE222","x":12.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":0,"type":"aircraft_state","aircraft":"EZY333","x":6.0,"y":12.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"HIGH"}
+{"tick":1,"type":"aircraft_state","aircraft":"SAS111","x":0.7,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"IBE222","x":11.3,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"EZY333","x":6.0,"y":11.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"HIGH"}
+{"tick":0,"type":"conflict_detected","aircraft":["SAS111","IBE222"],"severity":"predicted","horizontalDistance":4.4,"verticalDistance":0,"predictedAtTick":4}
+{"tick":0,"type":"plan_generated","planner":"strips","aircraft":"IBE222","actions":["climb(IBE222,32000)"]}
+{"tick":0,"type":"maneuver_selected","aircraft":"IBE222","maneuver":"climb","targetAltitude":32000,"reason":"Initial plan candidate; secondary conflict prevention will be refined in Sprint 8"}
+{"tick":0,"type":"belief_update","agent":"resolution_planner","belief":"candidate_plan(IBE222,climb)"}
+{"tick":0,"type":"explanation","agent":"explanation_agent","message":"The planner selected a climb candidate. Secondary conflict rejection is documented as technical debt before Sprint 8."}
