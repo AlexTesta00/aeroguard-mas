@@ -137,7 +137,7 @@ class StripsResolutionPlanner(
 
         val actions =
             candidateManeuvers.map { maneuver ->
-                val maneuverName = maneuver.toPlannerTerm()
+                val maneuverName = maneuver.formatAsPlannerAction()
 
                 StripsAction(
                     name = maneuverName,
@@ -189,37 +189,4 @@ class StripsResolutionPlanner(
             "Aircraft $maneuverAircraftId was selected for maneuvering " +
             "based on symbolic priority scores: $prioritySummary."
     }
-
-    private fun Maneuver.toPlannerTerm(): String =
-        when (type) {
-            ManeuverType.CLIMB ->
-                "climb($aircraftId,${targetFlightLevel?.feet ?: "unknown"})"
-
-            ManeuverType.DESCEND ->
-                "descend($aircraftId,${targetFlightLevel?.feet ?: "unknown"})"
-
-            ManeuverType.TURN_LEFT ->
-                "turn_left($aircraftId,${targetWaypoint?.name ?: "unknown"})"
-
-            ManeuverType.TURN_RIGHT ->
-                "turn_right($aircraftId,${targetWaypoint?.name ?: "unknown"})"
-
-            ManeuverType.SLOW_DOWN ->
-                "slow_down($aircraftId)"
-
-            ManeuverType.RESUME_SPEED ->
-                "resume_speed($aircraftId)"
-
-            ManeuverType.ENTER_HOLDING ->
-                "enter_holding($aircraftId)"
-
-            ManeuverType.CONTINUE_ROUTE ->
-                "continue_route($aircraftId)"
-
-            ManeuverType.AVOID_WEATHER_ZONE ->
-                "avoid_weather_zone($aircraftId)"
-
-            ManeuverType.REROUTE_TO_WAYPOINT ->
-                "reroute_to_waypoint($aircraftId,${targetWaypoint?.name ?: "unknown"})"
-        }
 }

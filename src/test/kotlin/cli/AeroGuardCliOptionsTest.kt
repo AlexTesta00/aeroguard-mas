@@ -25,4 +25,22 @@ class AeroGuardCliOptionsTest {
 
         assertTrue(options.explain)
     }
+
+    @Test
+    fun `parses events argument`() {
+        val options =
+            parseCliOptions(
+                arrayOf(
+                    "--scenario",
+                    "scenarios/simple_conflict.json",
+                    "--events",
+                    "build/aeroguard/events/simple_conflict_events.jsonl",
+                ),
+            )
+
+        assertEquals(
+            Path.of("build/aeroguard/events/simple_conflict_events.jsonl"),
+            options.eventsPath,
+        )
+    }
 }

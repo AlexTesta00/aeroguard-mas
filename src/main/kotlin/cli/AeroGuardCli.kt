@@ -6,11 +6,15 @@ import domain.Maneuver
 import domain.ManeuverType
 import domain.ResolutionPlan
 import domain.SimulationState
+import events.JsonlSimulationEventSink
+import events.SimulationEventRecorder
+import explanation.ExplanationService
 import integration.JasonAgentCatalog
 import integration.JasonAgentSmokeAnalyzer
 import integration.JsonScenarioLoader
 import integration.ScenarioLoadingException
 import planning.StripsResolutionPlanner
+import planning.formatAsPlannerAction
 import reasoning.SafetyReasoner
 import reasoning.TuPrologSafetyReasoner
 import simulation.ConflictDetector
@@ -27,11 +31,13 @@ object AppInfo {
 
 data class CliOptions(
     val scenarioPath: Path? = null,
+    val eventsPath: Path? = null,
     val explain: Boolean = false,
 )
 
 fun parseCliOptions(args: Array<String>): CliOptions {
     var scenarioPath: Path? = null
+    var eventsPath: Path? = null
     var explain = false
     var index = 0
 
@@ -40,6 +46,12 @@ fun parseCliOptions(args: Array<String>): CliOptions {
             "--scenario" -> {
                 require(index + 1 < args.size) { "Missing value after --scenario." }
                 scenarioPath = Path.of(args[index + 1])
+                index += 2
+            }
+
+            "--events" -> {
+                require(index + 1 < args.size) { "Missing value after --events." }
+                eventsPath = Path.of(args[index + 1])
                 index += 2
             }
 
@@ -54,6 +66,7 @@ fun parseCliOptions(args: Array<String>): CliOptions {
 
     return CliOptions(
         scenarioPath = scenarioPath,
+        eventsPath = eventsPath,
         explain = explain,
     )
 }
@@ -79,7 +92,10 @@ fun main(args: Array<String>) {
         println()
         println("Run tests with: ./gradlew test")
         println("Run Jason smoke check with: ./gradlew runJasonSmoke")
-        println("Run a scenario with: ./gradlew run --args=\"--scenario scenarios/simple_conflict.json --explain\"")
+        println("Run a scenario with:")
+        println(
+            "./gradlew run --args=\"--scenario scenarios/simple_conflict.json --events build/aeroguard/events/simple_conflict_events.jsonl --explain\"",
+        )
         return
     }
 
@@ -173,6 +189,28 @@ fun main(args: Array<String>) {
     println()
     printResolutionPlan(resolutionPlan)
 
+    val explanations =
+        ExplanationService(reasoner)
+            .explainRun(
+                runResult = result,
+                resolutionPlan = resolutionPlan,
+            )
+
+    val eventsPath =
+        options.eventsPath
+            ?: Path.of("build/aeroguard/events/simulation_events.jsonl")
+
+    JsonlSimulationEventSink(eventsPath).use { sink ->
+        SimulationEventRecorder(sink).recordRun(
+            runResult = result,
+            resolutionPlan = resolutionPlan,
+            explanations = explanations,
+        )
+    }
+
+    println()
+    println("Events written to: $eventsPath")
+
     if (options.explain) {
         println()
         println("Symbolic explanations:")
@@ -183,8 +221,8 @@ fun main(args: Array<String>) {
             println("- $explanation")
         }
 
-        if (resolutionPlan != null) {
-            println("- ${resolutionPlan.explanation}")
+        explanations.forEach { explanation ->
+            println("- ${explanation.message}")
         }
     }
 }
@@ -294,39 +332,6 @@ private fun printResolutionPlan(plan: ResolutionPlan?) {
 
     println("- planId=${plan.id}")
     println("- conflictId=${plan.conflictId}")
-    println("- maneuvers=${plan.maneuvers.map { maneuver -> formatManeuver(maneuver) }}")
+    println("- maneuvers=${plan.maneuvers.map { maneuver -> maneuver.formatAsPlannerAction() }}")
     println("- explanation=${plan.explanation}")
 }
-
-private fun formatManeuver(maneuver: Maneuver): String =
-    when (maneuver.type) {
-        ManeuverType.CLIMB ->
-            "climb(${maneuver.aircraftId},${maneuver.targetFlightLevel?.feet})"
-
-        ManeuverType.DESCEND ->
-            "descend(${maneuver.aircraftId},${maneuver.targetFlightLevel?.feet})"
-
-        ManeuverType.SLOW_DOWN ->
-            "slow_down(${maneuver.aircraftId})"
-
-        ManeuverType.RESUME_SPEED ->
-            "resume_speed(${maneuver.aircraftId})"
-
-        ManeuverType.ENTER_HOLDING ->
-            "enter_holding(${maneuver.aircraftId})"
-
-        ManeuverType.CONTINUE_ROUTE ->
-            "continue_route(${maneuver.aircraftId})"
-
-        ManeuverType.TURN_LEFT ->
-            "turn_left(${maneuver.aircraftId})"
-
-        ManeuverType.TURN_RIGHT ->
-            "turn_right(${maneuver.aircraftId})"
-
-        ManeuverType.AVOID_WEATHER_ZONE ->
-            "avoid_weather_zone(${maneuver.aircraftId})"
-
-        ManeuverType.REROUTE_TO_WAYPOINT ->
-            "reroute_to_waypoint(${maneuver.aircraftId})"
-    }
