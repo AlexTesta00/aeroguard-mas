@@ -98,4 +98,36 @@ class SimulationEventSerializationTest {
             assertTrue(parsed is JsonObject)
         }
     }
+
+    @Test
+    fun `serializes weather zone activated event`() {
+        val event =
+            WeatherZoneActivatedEvent(
+                tick = 3,
+                zone = "WX1",
+                x = 5.0,
+                y = 5.0,
+                radius = 2.5,
+            )
+
+        val json = Json.parseToJsonElement(event.toJsonLine()).jsonObject
+
+        assertEquals("weather_zone_activated", json["type"]?.jsonPrimitive?.content)
+        assertEquals("WX1", json["zone"]?.jsonPrimitive?.content)
+    }
+
+    @Test
+    fun `serializes replanning triggered event`() {
+        val event =
+            ReplanningTriggeredEvent(
+                tick = 3,
+                aircraft = "RYR700",
+                reason = "Weather zone WX1 blocks the nominal route",
+            )
+
+        val json = Json.parseToJsonElement(event.toJsonLine()).jsonObject
+
+        assertEquals("replanning_triggered", json["type"]?.jsonPrimitive?.content)
+        assertEquals("RYR700", json["aircraft"]?.jsonPrimitive?.content)
+    }
 }

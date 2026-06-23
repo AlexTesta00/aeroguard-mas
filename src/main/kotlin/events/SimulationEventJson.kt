@@ -78,6 +78,24 @@ fun SimulationEvent.toJsonObject(): JsonObject =
                 put("agent", agent)
                 put("message", message)
             }
+
+        is WeatherZoneActivatedEvent ->
+            buildJsonObject {
+                put("tick", tick)
+                put("type", type)
+                put("zone", zone)
+                put("x", x)
+                put("y", y)
+                put("radius", radius)
+            }
+
+        is ReplanningTriggeredEvent ->
+            buildJsonObject {
+                put("tick", tick)
+                put("type", type)
+                put("aircraft", aircraft)
+                put("reason", reason)
+            }
     }
 
 fun SimulationEvent.toJsonLine(): String = toJsonObject().toString()
