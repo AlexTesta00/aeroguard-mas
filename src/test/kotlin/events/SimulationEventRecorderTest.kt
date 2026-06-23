@@ -67,4 +67,52 @@ class SimulationEventRecorderTest {
         assertTrue("maneuver_selected" in types)
         assertTrue("explanation" in types)
     }
+
+    @Test
+    fun `records additional weather replanning events`() {
+        val scenario = JsonScenarioLoader().load(Path.of("scenarios/weather_replanning.json"))
+        val reasoner = TuPrologSafetyReasoner.fromClasspath()
+        val engine =
+            SimulationEngine(
+                conflictDetector = ConflictDetector(safetyReasoner = reasoner),
+                predictionHorizonTicks = 6,
+            )
+
+        val runResult = engine.run(scenario)
+        val weatherDecision =
+            replanning
+                .WeatherReplanningService(reasoner)
+                .planWeatherReplanning(scenario, runResult)
+                .single()
+
+        val explanations =
+            ExplanationService(reasoner)
+                .explainWeatherReplanning(weatherDecision)
+
+        val output = Files.createTempFile("aeroguard-weather-replanning", ".jsonl")
+
+        JsonlSimulationEventSink(output).use { sink ->
+            SimulationEventRecorder(sink).recordRun(
+                runResult = runResult,
+                resolutionPlan = null,
+                explanations = explanations,
+                additionalEvents = weatherDecision.events,
+            )
+        }
+
+        val types =
+            Files
+                .readAllLines(output)
+                .map {
+                    Json
+                        .parseToJsonElement(it)
+                        .jsonObject["type"]!!
+                        .jsonPrimitive.content
+                }
+
+        assertTrue("weather_zone_activated" in types)
+        assertTrue("replanning_triggered" in types)
+        assertTrue("plan_generated" in types)
+        assertTrue("maneuver_selected" in types)
+    }
 }
