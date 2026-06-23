@@ -7,6 +7,7 @@ import domain.ManeuverType
 import domain.ResolutionPlan
 import domain.SimulationState
 import events.JsonlSimulationEventSink
+import events.SimulationEvent
 import events.SimulationEventRecorder
 import explanation.ExplanationService
 import integration.JasonAgentCatalog
@@ -17,6 +18,8 @@ import planning.StripsResolutionPlanner
 import planning.formatAsPlannerAction
 import reasoning.SafetyReasoner
 import reasoning.TuPrologSafetyReasoner
+import replanning.WeatherReplanningDecision
+import replanning.WeatherReplanningService
 import simulation.ConflictDetector
 import simulation.SimulationEngine
 import java.nio.file.Path
@@ -91,10 +94,9 @@ fun main(args: Array<String>) {
     if (scenarioPath == null) {
         println()
         println("Run tests with: ./gradlew test")
-        println("Run Jason smoke check with: ./gradlew runJasonSmoke")
         println("Run a scenario with:")
         println(
-            "./gradlew run --args=\"--scenario scenarios/simple_conflict.json --events build/aeroguard/events/simple_conflict_events.jsonl --explain\"",
+            "./gradlew run --args=\"--scenario scenarios/weather_replanning.json --events build/aeroguard/events/weather_replanning_events.jsonl --explain\"",
         )
         return
     }
@@ -115,6 +117,7 @@ fun main(args: Array<String>) {
             "vertical=${scenario.separation.verticalFeet}ft",
     )
     println("Aircraft count: ${scenario.aircraft.size}")
+
     scenario.aircraft.forEach { aircraft ->
         println(
             "- ${aircraft.id}: " +
@@ -174,7 +177,7 @@ fun main(args: Array<String>) {
         result.predictedConflicts.firstOrNull()
             ?: result.currentConflicts.firstOrNull()
 
-    val resolutionPlan =
+    val conflictResolutionPlan =
         conflictForPlanning?.let { conflict ->
             val planningState =
                 result.states.firstOrNull { it.tick == conflict.tick }
@@ -187,14 +190,38 @@ fun main(args: Array<String>) {
         }
 
     println()
-    printResolutionPlan(resolutionPlan)
+    printResolutionPlan("Conflict resolution plan candidate", conflictResolutionPlan)
+
+    val weatherDecisions =
+        WeatherReplanningService(reasoner)
+            .planWeatherReplanning(
+                scenario = scenario,
+                runResult = result,
+            )
+
+    println()
+    printWeatherDecisions(weatherDecisions)
+
+    val explanationService = ExplanationService(reasoner)
 
     val explanations =
-        ExplanationService(reasoner)
-            .explainRun(
-                runResult = result,
-                resolutionPlan = resolutionPlan,
+        buildList {
+            addAll(
+                explanationService.explainRun(
+                    runResult = result,
+                    resolutionPlan = conflictResolutionPlan,
+                ),
             )
+
+            weatherDecisions.forEach { decision ->
+                addAll(explanationService.explainWeatherReplanning(decision))
+            }
+        }
+
+    val additionalEvents: List<SimulationEvent> =
+        weatherDecisions.flatMap { decision ->
+            decision.events
+        }
 
     val eventsPath =
         options.eventsPath
@@ -203,8 +230,9 @@ fun main(args: Array<String>) {
     JsonlSimulationEventSink(eventsPath).use { sink ->
         SimulationEventRecorder(sink).recordRun(
             runResult = result,
-            resolutionPlan = resolutionPlan,
+            resolutionPlan = conflictResolutionPlan,
             explanations = explanations,
+            additionalEvents = additionalEvents,
         )
     }
 
@@ -322,8 +350,11 @@ private fun printSampleManeuverCheck(
     )
 }
 
-private fun printResolutionPlan(plan: ResolutionPlan?) {
-    println("Resolution plan candidate:")
+private fun printResolutionPlan(
+    title: String,
+    plan: ResolutionPlan?,
+) {
+    println("$title:")
 
     if (plan == null) {
         println("- none")
@@ -334,4 +365,21 @@ private fun printResolutionPlan(plan: ResolutionPlan?) {
     println("- conflictId=${plan.conflictId}")
     println("- maneuvers=${plan.maneuvers.map { maneuver -> maneuver.formatAsPlannerAction() }}")
     println("- explanation=${plan.explanation}")
+}
+
+private fun printWeatherDecisions(decisions: List<WeatherReplanningDecision>) {
+    println("Weather replanning:")
+
+    if (decisions.isEmpty()) {
+        println("- none")
+        return
+    }
+
+    decisions.forEach { decision ->
+        println(
+            "- tick=${decision.tick}, aircraft=${decision.aircraftId}, " +
+                "zone=${decision.zone.id}, plan=${decision.resolutionPlan.id}, " +
+                "maneuvers=${decision.resolutionPlan.maneuvers.map { it.formatAsPlannerAction() }}",
+        )
+    }
 }
