@@ -72,6 +72,20 @@ REQUIRED_FIELDS_BY_TYPE: dict[str, set[str]] = {
         "agent",
         "message",
     },
+    "weather_zone_activated": {
+        "tick",
+        "type",
+        "zone",
+        "x",
+        "y",
+        "radius",
+    },
+    "replanning_triggered": {
+        "tick",
+        "type",
+        "aircraft",
+        "reason",
+    },
 }
 
 
