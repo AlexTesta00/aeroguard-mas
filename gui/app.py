@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -24,6 +25,7 @@ SAMPLE_EVENTS_DIR = Path(__file__).parent / "sample_events"
 def main() -> None:
     st.set_page_config(
         page_title="AeroGuard-MAS Visualizer",
+        page_icon="✈️",
         layout="wide",
     )
 
@@ -175,6 +177,7 @@ def _render_map_tab(
     aircraft_df = _aircraft_states_at_tick(df, selected_tick)
     conflicts_df = _events_df(grouped.get("conflict_detected", []))
     maneuvers_df = _events_df(grouped.get("maneuver_selected", []))
+    weather_df = _events_df(grouped.get("weather_zone_activated", []))
 
     left, right = st.columns([2, 1])
 
@@ -205,15 +208,16 @@ def _render_map_tab(
             )
 
             _add_conflict_lines(fig, aircraft_df, conflicts_df, selected_tick)
+            _add_weather_zones(fig, weather_df, selected_tick)
 
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     with right:
         st.markdown("### Aircraft at tick")
         if aircraft_df.empty:
             st.write("No aircraft.")
         else:
-            st.dataframe(
+            _show_dataframe(
                 aircraft_df[
                     [
                         "aircraft",
@@ -224,9 +228,7 @@ def _render_map_tab(
                         "status",
                         "priority",
                     ]
-                ],
-                use_container_width=True,
-                hide_index=True,
+                ]
             )
 
         st.markdown("### Maneuvers")
@@ -234,7 +236,14 @@ def _render_map_tab(
         if tick_maneuvers.empty:
             st.write("No maneuver selected yet.")
         else:
-            st.dataframe(tick_maneuvers, use_container_width=True, hide_index=True)
+            _show_dataframe(tick_maneuvers)
+
+        st.markdown("### Weather zones")
+        visible_weather = _events_at_or_before_tick(weather_df, selected_tick)
+        if visible_weather.empty:
+            st.write("No active weather-zone events yet.")
+        else:
+            _show_dataframe(visible_weather)
 
 
 def _render_timeline_tab(
@@ -259,10 +268,11 @@ def _render_timeline_tab(
             color="type",
             title="Events per tick",
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     conflicts = _events_df(grouped.get("conflict_detected", []))
     plans = _events_df(grouped.get("plan_generated", []))
+    replanning = _events_df(grouped.get("replanning_triggered", []))
 
     col1, col2 = st.columns(2)
 
@@ -271,18 +281,24 @@ def _render_timeline_tab(
         if conflicts.empty:
             st.write("No conflicts.")
         else:
-            st.dataframe(conflicts, use_container_width=True, hide_index=True)
+            _show_dataframe(conflicts)
 
     with col2:
         st.markdown("### Plans")
         if plans.empty:
             st.write("No plans.")
         else:
-            st.dataframe(plans, use_container_width=True, hide_index=True)
+            _show_dataframe(plans)
+
+    st.markdown("### Replanning")
+    if replanning.empty:
+        st.write("No replanning events.")
+    else:
+        _show_dataframe(replanning)
 
     st.markdown("### Events at selected tick")
     tick_df = df[df["tick"] == selected_tick].copy()
-    st.dataframe(tick_df, use_container_width=True, hide_index=True)
+    _show_dataframe(tick_df)
 
 
 def _render_agents_tab(
@@ -303,11 +319,7 @@ def _render_agents_tab(
         if beliefs.empty:
             st.write("No belief updates.")
         else:
-            st.dataframe(
-                _events_at_or_before_tick(beliefs, selected_tick),
-                use_container_width=True,
-                hide_index=True,
-            )
+            _show_dataframe(_events_at_or_before_tick(beliefs, selected_tick))
 
     with col2:
         st.markdown("### Intentions inferred from plans/maneuvers")
@@ -315,7 +327,7 @@ def _render_agents_tab(
         if inferred.empty:
             st.write("No inferred intentions yet.")
         else:
-            st.dataframe(inferred, use_container_width=True, hide_index=True)
+            _show_dataframe(inferred)
 
     st.markdown("### Agent responsibility summary")
     st.table(
@@ -331,7 +343,7 @@ def _render_agents_tab(
                 },
                 {
                     "agent": "resolution_planner",
-                    "responsibility": "Produces STRIPS resolution plans.",
+                    "responsibility": "Produces STRIPS resolution and replanning plans.",
                 },
                 {
                     "agent": "explanation_agent",
@@ -376,9 +388,9 @@ def _render_raw_events_tab(df: pd.DataFrame) -> None:
 
     filtered = df[df["type"].isin(event_type_filter)] if event_type_filter else df
 
-    st.dataframe(filtered, use_container_width=True, hide_index=True)
+    _show_dataframe(filtered)
 
-    csv = filtered.to_csv(index=False).encode("utf-8")
+    csv = _arrow_safe_dataframe(filtered).to_csv(index=False).encode("utf-8")
     st.download_button(
         label="Download filtered events as CSV",
         data=csv,
@@ -445,6 +457,52 @@ def _add_conflict_lines(
         )
 
 
+def _add_weather_zones(
+        fig: go.Figure,
+        weather_df: pd.DataFrame,
+        selected_tick: int,
+) -> None:
+    if weather_df.empty:
+        return
+
+    visible_weather = _events_at_or_before_tick(weather_df, selected_tick)
+
+    for _, zone in visible_weather.iterrows():
+        x = zone.get("x")
+        y = zone.get("y")
+        radius = zone.get("radius")
+        name = zone.get("zone", "weather_zone")
+
+        if not isinstance(x, int | float):
+            continue
+        if not isinstance(y, int | float):
+            continue
+        if not isinstance(radius, int | float):
+            continue
+
+        fig.add_shape(
+            type="circle",
+            xref="x",
+            yref="y",
+            x0=x - radius,
+            y0=y - radius,
+            x1=x + radius,
+            y1=y + radius,
+            line={"dash": "dot", "width": 2},
+        )
+
+        fig.add_trace(
+            go.Scatter(
+                x=[x],
+                y=[y],
+                mode="text",
+                text=[str(name)],
+                name=str(name),
+                showlegend=False,
+            )
+        )
+
+
 def _events_df(events: list[JsonEvent]) -> pd.DataFrame:
     if not events:
         return pd.DataFrame()
@@ -504,6 +562,49 @@ def _build_agent_intentions(
         )
 
     return pd.DataFrame(rows)
+
+
+def _arrow_safe_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    if df.empty:
+        return df
+
+    safe = df.copy()
+
+    for column in safe.columns:
+        if safe[column].dtype == "object":
+            safe[column] = safe[column].map(_format_cell_for_display)
+
+    return safe
+
+
+def _format_cell_for_display(value: Any) -> str:
+    if isinstance(value, list):
+        return ", ".join(str(item) for item in value)
+
+    if isinstance(value, tuple | set):
+        return ", ".join(str(item) for item in value)
+
+    if isinstance(value, dict):
+        return json.dumps(value, ensure_ascii=False)
+
+    if value is None:
+        return ""
+
+    try:
+        if pd.isna(value):
+            return ""
+    except (TypeError, ValueError):
+        pass
+
+    return str(value)
+
+
+def _show_dataframe(df: pd.DataFrame, *, hide_index: bool = True) -> None:
+    st.dataframe(
+        _arrow_safe_dataframe(df),
+        width="stretch",
+        hide_index=hide_index,
+    )
 
 
 if __name__ == "__main__":
