@@ -20,6 +20,7 @@ from validate_events import (
 
 
 SAMPLE_EVENTS_DIR = Path(__file__).parent / "sample_events"
+MIN_VERTICAL_SEPARATION_FT = 1000
 
 
 def main() -> None:
@@ -184,41 +185,17 @@ def _render_map_tab(
         if aircraft_df.empty:
             st.warning("No aircraft state events available for this tick.")
         else:
-            plot_df = aircraft_df.copy()
-            plot_df["display_label"] = plot_df.apply(
-                lambda row: f"{row['aircraft']} FL{row['altitude']}",
-                axis=1,
+            fig = _build_aircraft_map_figure(
+                aircraft_df=aircraft_df,
+                conflicts_df=conflicts_df,
+                weather_df=weather_df,
+                selected_tick=selected_tick,
             )
-
-            fig = px.scatter(
-                plot_df,
-                x="x",
-                y="y",
-                text="display_label",
-                color="aircraft",
-                hover_data=[
-                    "aircraft",
-                    "altitude",
-                    "speed",
-                    "status",
-                    "priority",
-                ],
-                title=f"Aircraft positions at tick {selected_tick}",
-            )
-            fig.update_traces(textposition="top center", marker={"size": 14})
-            fig.update_layout(
-                xaxis_title="X",
-                yaxis_title="Y",
-                yaxis_scaleanchor="x",
-                height=600,
-            )
-
-            _add_conflict_lines(fig, aircraft_df, conflicts_df, selected_tick)
-            _add_weather_zones(fig, weather_df, selected_tick)
 
             st.plotly_chart(fig, width="stretch")
 
             _render_altitude_profile(df, selected_tick)
+            _render_vertical_separation_profile(df, selected_tick)
 
     with right:
         st.markdown("### Aircraft at tick")
@@ -426,6 +403,111 @@ def _aircraft_states_at_tick(df: pd.DataFrame, tick: int) -> pd.DataFrame:
     return previous.groupby("aircraft").tail(1).sort_values("aircraft")
 
 
+def _build_aircraft_map_figure(
+        aircraft_df: pd.DataFrame,
+        conflicts_df: pd.DataFrame,
+        weather_df: pd.DataFrame,
+        selected_tick: int,
+) -> go.Figure:
+    plot_df = _aircraft_display_positions(aircraft_df)
+
+    fig = go.Figure()
+
+    for _, row in plot_df.iterrows():
+        aircraft = row["aircraft"]
+        altitude = row["altitude"]
+        speed = row["speed"]
+        status = row["status"]
+        priority = row["priority"]
+
+        hover_text = (
+            f"<b>{aircraft}</b><br>"
+            f"Position: ({float(row['x']):.2f}, {float(row['y']):.2f})<br>"
+            f"Altitude: {altitude} ft<br>"
+            f"Speed: {speed}<br>"
+            f"Status: {status}<br>"
+            f"Priority: {priority}"
+        )
+
+        fig.add_trace(
+            go.Scatter(
+                x=[row["display_x"]],
+                y=[row["display_y"]],
+                mode="text",
+                text=["✈"],
+                textfont={"size": 28},
+                name=str(aircraft),
+                hovertext=[hover_text],
+                hoverinfo="text",
+                showlegend=True,
+            )
+        )
+
+        fig.add_trace(
+            go.Scatter(
+                x=[row["display_x"]],
+                y=[row["display_y"] + row["label_offset"]],
+                mode="text",
+                text=[f"{aircraft}<br>{altitude} ft"],
+                textfont={"size": 11},
+                name=f"{aircraft} label",
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+
+    _add_conflict_lines(fig, plot_df, conflicts_df, selected_tick)
+    _add_weather_zones(fig, weather_df, selected_tick)
+
+    fig.update_layout(
+        title=f"Aircraft positions at tick {selected_tick}",
+        xaxis_title="X",
+        yaxis_title="Y",
+        yaxis_scaleanchor="x",
+        height=600,
+    )
+
+    return fig
+
+
+def _aircraft_display_positions(aircraft_df: pd.DataFrame) -> pd.DataFrame:
+    if aircraft_df.empty:
+        return aircraft_df
+
+    plot_df = aircraft_df.copy()
+
+    x_span = max(float(plot_df["x"].max() - plot_df["x"].min()), 1.0)
+    y_span = max(float(plot_df["y"].max() - plot_df["y"].min()), 1.0)
+    offset = min(x_span, y_span) * 0.035
+
+    plot_df["position_key"] = plot_df.apply(
+        lambda row: f"{round(float(row['x']), 3)}:{round(float(row['y']), 3)}",
+        axis=1,
+    )
+
+    plot_df["display_x"] = plot_df["x"].astype(float)
+    plot_df["display_y"] = plot_df["y"].astype(float)
+    plot_df["label_offset"] = offset * 1.6
+
+    for _, group in plot_df.groupby("position_key"):
+        if len(group) == 1:
+            continue
+
+        group_indices = list(group.index)
+        center = (len(group_indices) - 1) / 2.0
+
+        for local_index, dataframe_index in enumerate(group_indices):
+            relative_index = local_index - center
+            plot_df.loc[dataframe_index, "display_x"] = (
+                    float(plot_df.loc[dataframe_index, "x"]) + relative_index * offset
+            )
+            plot_df.loc[dataframe_index, "display_y"] = (
+                    float(plot_df.loc[dataframe_index, "y"]) + relative_index * offset
+            )
+
+    return plot_df
+
+
 def _add_conflict_lines(
         fig: go.Figure,
         aircraft_df: pd.DataFrame,
@@ -437,10 +519,13 @@ def _add_conflict_lines(
 
     visible_conflicts = conflicts_df[conflicts_df["tick"] == selected_tick].copy()
 
+    x_column = "display_x" if "display_x" in aircraft_df.columns else "x"
+    y_column = "display_y" if "display_y" in aircraft_df.columns else "y"
+
     positions = {
-        row["aircraft"]: (row["x"], row["y"])
+        row["aircraft"]: (row[x_column], row[y_column])
         for _, row in aircraft_df.iterrows()
-        if "aircraft" in row and "x" in row and "y" in row
+        if "aircraft" in row and x_column in row and y_column in row
     }
 
     for _, conflict in visible_conflicts.iterrows():
@@ -482,11 +567,11 @@ def _add_weather_zones(
         radius = zone.get("radius")
         name = zone.get("zone", "weather_zone")
 
-        if not isinstance(x, int | float):
+        if not isinstance(x, (int, float)):
             continue
-        if not isinstance(y, int | float):
+        if not isinstance(y, (int, float)):
             continue
-        if not isinstance(radius, int | float):
+        if not isinstance(radius, (int, float)):
             continue
 
         fig.add_shape(
@@ -523,6 +608,18 @@ def _render_altitude_profile(df: pd.DataFrame, selected_tick: int) -> None:
 
     st.markdown("### Altitude profile")
 
+    min_altitude = int(aircraft_history["altitude"].min())
+    max_altitude = int(aircraft_history["altitude"].max())
+
+    if min_altitude == max_altitude:
+        y_min = min_altitude - 500
+        y_max = max_altitude + 500
+    else:
+        altitude_span = max_altitude - min_altitude
+        margin = max(250, int(altitude_span * 0.15))
+        y_min = min_altitude - margin
+        y_max = max_altitude + margin
+
     fig = px.line(
         aircraft_history,
         x="tick",
@@ -534,7 +631,80 @@ def _render_altitude_profile(df: pd.DataFrame, selected_tick: int) -> None:
     fig.update_layout(
         xaxis_title="Tick",
         yaxis_title="Altitude / Flight level",
+        height=320,
+    )
+    fig.update_yaxes(
+        range=[y_min, y_max],
+        dtick=500,
+        tickformat=",d",
+    )
+
+    st.plotly_chart(fig, width="stretch")
+
+
+def _render_vertical_separation_profile(df: pd.DataFrame, selected_tick: int) -> None:
+    aircraft_history = df[
+        (df["type"] == "aircraft_state")
+        & (df["tick"] <= selected_tick)
+        ].copy()
+
+    if aircraft_history.empty:
+        return
+
+    rows: list[dict[str, Any]] = []
+
+    for tick, tick_df in aircraft_history.groupby("tick"):
+        aircraft_rows = tick_df.to_dict("records")
+
+        for index, first in enumerate(aircraft_rows):
+            for second in aircraft_rows[index + 1:]:
+                vertical_distance = abs(
+                    int(first["altitude"]) - int(second["altitude"])
+                )
+
+                rows.append(
+                    {
+                        "tick": int(tick),
+                        "aircraft_pair": f"{first['aircraft']} / {second['aircraft']}",
+                        "vertical_distance_ft": vertical_distance,
+                    }
+                )
+
+    if not rows:
+        return
+
+    separation_df = pd.DataFrame(rows)
+
+    st.markdown("### Vertical separation profile")
+
+    max_distance = int(separation_df["vertical_distance_ft"].max())
+    y_max = max(2500, max_distance + 250)
+
+    fig = px.line(
+        separation_df,
+        x="tick",
+        y="vertical_distance_ft",
+        color="aircraft_pair",
+        markers=True,
+        title="Vertical separation over time",
+    )
+
+    fig.add_hline(
+        y=MIN_VERTICAL_SEPARATION_FT,
+        line_dash="dash",
+        annotation_text=f"Minimum vertical separation: {MIN_VERTICAL_SEPARATION_FT} ft",
+        annotation_position="top left",
+    )
+
+    fig.update_layout(
+        xaxis_title="Tick",
+        yaxis_title="Vertical separation / ft",
         height=300,
+    )
+    fig.update_yaxes(
+        range=[0, y_max],
+        dtick=500,
+        tickformat=",d",
     )
 
     st.plotly_chart(fig, width="stretch")
@@ -564,7 +734,7 @@ def _render_vertical_separation_summary(aircraft_df: pd.DataFrame) -> None:
                     "vertical_distance_ft": vertical_distance,
                     "status": (
                         "separated vertically"
-                        if vertical_distance >= 1000
+                        if vertical_distance >= MIN_VERTICAL_SEPARATION_FT
                         else "vertical conflict risk"
                     ),
                 }
@@ -639,16 +809,6 @@ def _build_agent_intentions(
 
 
 def _arrow_safe_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    """Return a DataFrame that Streamlit/PyArrow can render safely.
-
-    JSONL events may contain mixed object columns, for example:
-    - aircraft as string in aircraft_state events;
-    - aircraft as list in conflict_detected events;
-    - actions as list in plan_generated events.
-
-    PyArrow does not accept columns mixing lists and scalar values, so object
-    columns are converted to display strings only at rendering time.
-    """
     if df.empty:
         return df
 
