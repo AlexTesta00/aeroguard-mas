@@ -78,4 +78,29 @@ class ExplanationServiceTest {
 
         assertTrue(explanations.any { it.message.contains("No conflicts", ignoreCase = true) })
     }
+
+    @Test
+    fun `generates explanation for weather replanning`() {
+        val scenario = loader.load(Path.of("scenarios/weather_replanning.json"))
+        val reasoner = TuPrologSafetyReasoner.fromClasspath()
+        val runResult =
+            SimulationEngine(
+                conflictDetector = simulation.ConflictDetector(safetyReasoner = reasoner),
+                predictionHorizonTicks = 6,
+            ).run(scenario)
+
+        val decision =
+            replanning
+                .WeatherReplanningService(reasoner)
+                .planWeatherReplanning(scenario, runResult)
+                .single()
+
+        val explanations =
+            ExplanationService(reasoner)
+                .explainWeatherReplanning(decision)
+
+        assertTrue(explanations.isNotEmpty())
+        assertTrue(explanations.any { it.message.contains("weather", ignoreCase = true) })
+        assertTrue(explanations.any { it.agent == "explanation_agent" })
+    }
 }
