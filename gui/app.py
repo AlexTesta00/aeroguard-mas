@@ -25,7 +25,6 @@ SAMPLE_EVENTS_DIR = Path(__file__).parent / "sample_events"
 def main() -> None:
     st.set_page_config(
         page_title="AeroGuard-MAS Visualizer",
-        page_icon="✈️",
         layout="wide",
     )
 
@@ -185,11 +184,18 @@ def _render_map_tab(
         if aircraft_df.empty:
             st.warning("No aircraft state events available for this tick.")
         else:
+            plot_df = aircraft_df.copy()
+            plot_df["display_label"] = plot_df.apply(
+                lambda row: f"{row['aircraft']} FL{row['altitude']}",
+                axis=1,
+            )
+
             fig = px.scatter(
-                aircraft_df,
+                plot_df,
                 x="x",
                 y="y",
-                text="aircraft",
+                text="display_label",
+                color="aircraft",
                 hover_data=[
                     "aircraft",
                     "altitude",
@@ -212,6 +218,8 @@ def _render_map_tab(
 
             st.plotly_chart(fig, width="stretch")
 
+            _render_altitude_profile(df, selected_tick)
+
     with right:
         st.markdown("### Aircraft at tick")
         if aircraft_df.empty:
@@ -230,6 +238,7 @@ def _render_map_tab(
                     ]
                 ]
             )
+            _render_vertical_separation_summary(aircraft_df)
 
         st.markdown("### Maneuvers")
         tick_maneuvers = _events_at_or_before_tick(maneuvers_df, selected_tick)
@@ -426,7 +435,7 @@ def _add_conflict_lines(
     if conflicts_df.empty or aircraft_df.empty:
         return
 
-    visible_conflicts = _events_at_or_before_tick(conflicts_df, selected_tick)
+    visible_conflicts = conflicts_df[conflicts_df["tick"] == selected_tick].copy()
 
     positions = {
         row["aircraft"]: (row["x"], row["y"])
@@ -503,6 +512,71 @@ def _add_weather_zones(
         )
 
 
+def _render_altitude_profile(df: pd.DataFrame, selected_tick: int) -> None:
+    aircraft_history = df[
+        (df["type"] == "aircraft_state")
+        & (df["tick"] <= selected_tick)
+        ].copy()
+
+    if aircraft_history.empty:
+        return
+
+    st.markdown("### Altitude profile")
+
+    fig = px.line(
+        aircraft_history,
+        x="tick",
+        y="altitude",
+        color="aircraft",
+        markers=True,
+        title="Aircraft altitude over time",
+    )
+    fig.update_layout(
+        xaxis_title="Tick",
+        yaxis_title="Altitude / Flight level",
+        height=300,
+    )
+
+    st.plotly_chart(fig, width="stretch")
+
+
+def _render_vertical_separation_summary(aircraft_df: pd.DataFrame) -> None:
+    if aircraft_df.empty or len(aircraft_df) < 2:
+        return
+
+    rows: list[dict[str, Any]] = []
+    aircraft_rows = aircraft_df.to_dict("records")
+
+    for index, first in enumerate(aircraft_rows):
+        for second in aircraft_rows[index + 1:]:
+            dx = float(first["x"]) - float(second["x"])
+            dy = float(first["y"]) - float(second["y"])
+            horizontal_distance = (dx**2 + dy**2) ** 0.5
+
+            vertical_distance = abs(
+                int(first["altitude"]) - int(second["altitude"])
+            )
+
+            rows.append(
+                {
+                    "aircraft_pair": f"{first['aircraft']} / {second['aircraft']}",
+                    "horizontal_distance": round(horizontal_distance, 2),
+                    "vertical_distance_ft": vertical_distance,
+                    "status": (
+                        "separated vertically"
+                        if vertical_distance >= 1000
+                        else "vertical conflict risk"
+                    ),
+                }
+            )
+
+    if not rows:
+        return
+
+    st.markdown("### Separation summary")
+    _show_dataframe(pd.DataFrame(rows))
+
+
 def _events_df(events: list[JsonEvent]) -> pd.DataFrame:
     if not events:
         return pd.DataFrame()
@@ -565,6 +639,16 @@ def _build_agent_intentions(
 
 
 def _arrow_safe_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """Return a DataFrame that Streamlit/PyArrow can render safely.
+
+    JSONL events may contain mixed object columns, for example:
+    - aircraft as string in aircraft_state events;
+    - aircraft as list in conflict_detected events;
+    - actions as list in plan_generated events.
+
+    PyArrow does not accept columns mixing lists and scalar values, so object
+    columns are converted to display strings only at rendering time.
+    """
     if df.empty:
         return df
 
@@ -581,7 +665,7 @@ def _format_cell_for_display(value: Any) -> str:
     if isinstance(value, list):
         return ", ".join(str(item) for item in value)
 
-    if isinstance(value, tuple | set):
+    if isinstance(value, (tuple, set)):
         return ", ".join(str(item) for item in value)
 
     if isinstance(value, dict):
