@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import planning.StripsResolutionPlanner
 import reasoning.TuPrologSafetyReasoner
 import simulation.ConflictDetector
+import simulation.ManagedSimulationEngine
 import simulation.SimulationEngine
 import java.nio.file.Files
 import java.nio.file.Path
@@ -66,5 +67,102 @@ class SimulationEventRecorderTest {
         assertTrue("plan_generated" in types)
         assertTrue("maneuver_selected" in types)
         assertTrue("explanation" in types)
+    }
+
+    @Test
+    fun `records additional weather replanning events`() {
+        val scenario = JsonScenarioLoader().load(Path.of("scenarios/weather_replanning.json"))
+        val reasoner = TuPrologSafetyReasoner.fromClasspath()
+        val engine =
+            SimulationEngine(
+                conflictDetector = ConflictDetector(safetyReasoner = reasoner),
+                predictionHorizonTicks = 6,
+            )
+
+        val runResult = engine.run(scenario)
+        val weatherDecision =
+            replanning
+                .WeatherReplanningService(reasoner)
+                .planWeatherReplanning(scenario, runResult)
+                .single()
+
+        val explanations =
+            ExplanationService(reasoner)
+                .explainWeatherReplanning(weatherDecision)
+
+        val output = Files.createTempFile("aeroguard-weather-replanning", ".jsonl")
+
+        JsonlSimulationEventSink(output).use { sink ->
+            SimulationEventRecorder(sink).recordRun(
+                runResult = runResult,
+                resolutionPlan = null,
+                explanations = explanations,
+                additionalEvents = weatherDecision.events,
+            )
+        }
+
+        val types =
+            Files
+                .readAllLines(output)
+                .map {
+                    Json
+                        .parseToJsonElement(it)
+                        .jsonObject["type"]!!
+                        .jsonPrimitive.content
+                }
+
+        assertTrue("weather_zone_activated" in types)
+        assertTrue("replanning_triggered" in types)
+        assertTrue("plan_generated" in types)
+        assertTrue("maneuver_selected" in types)
+    }
+
+    @Test
+    fun `records physically applied altitude maneuver in JSONL`() {
+        val scenario = JsonScenarioLoader().load(Path.of("scenarios/simple_conflict.json"))
+        val reasoner = TuPrologSafetyReasoner.fromClasspath()
+
+        val managedResult =
+            ManagedSimulationEngine(
+                safetyReasoner = reasoner,
+                predictionHorizonTicks = 6,
+            ).run(scenario)
+
+        val explanations =
+            ExplanationService(reasoner)
+                .explainRun(
+                    runResult = managedResult.runResult,
+                    resolutionPlan = managedResult.conflictResolutionPlan,
+                )
+
+        val output = Files.createTempFile("aeroguard-physical-maneuver", ".jsonl")
+
+        JsonlSimulationEventSink(output).use { sink ->
+            SimulationEventRecorder(sink).recordRun(
+                runResult = managedResult.runResult,
+                resolutionPlan = managedResult.conflictResolutionPlan,
+                explanations = explanations,
+            )
+        }
+
+        val maneuver = managedResult.conflictResolutionPlan!!.maneuvers.first()
+        val targetAltitude = maneuver.targetFlightLevel!!.feet.toString()
+
+        val postManeuverAircraftStates =
+            Files
+                .readAllLines(output)
+                .map { Json.parseToJsonElement(it).jsonObject }
+                .filter { event ->
+                    event["type"]!!.jsonPrimitive.content == "aircraft_state" &&
+                        event["aircraft"]!!.jsonPrimitive.content == maneuver.aircraftId &&
+                        event["tick"]!!.jsonPrimitive.content.toInt() >= managedResult.appliedManeuvers.first().tick
+                }
+
+        assertTrue(postManeuverAircraftStates.isNotEmpty())
+        assertTrue(
+            postManeuverAircraftStates.all { event ->
+                event["altitude"]!!.jsonPrimitive.content == targetAltitude
+            },
+        )
     }
 }

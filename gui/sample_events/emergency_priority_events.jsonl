@@ -1,0 +1,11 @@
+{"tick":0,"type":"aircraft_state","aircraft":"ITY900","x":0.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"low_fuel","priority":"EMERGENCY"}
+{"tick":0,"type":"aircraft_state","aircraft":"KLM321","x":12.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"ITY900","x":0.7,"y":0.7,"altitude":30000,"speed":1.0,"status":"low_fuel","priority":"EMERGENCY"}
+{"tick":1,"type":"aircraft_state","aircraft":"KLM321","x":11.3,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":2,"type":"aircraft_state","aircraft":"ITY900","x":1.4,"y":1.4,"altitude":30000,"speed":1.0,"status":"low_fuel","priority":"EMERGENCY"}
+{"tick":2,"type":"aircraft_state","aircraft":"KLM321","x":10.6,"y":1.4,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":0,"type":"conflict_detected","aircraft":["ITY900","KLM321"],"severity":"predicted","horizontalDistance":4.5,"verticalDistance":0,"predictedAtTick":5}
+{"tick":0,"type":"plan_generated","planner":"strips","aircraft":"KLM321","actions":["climb(KLM321,32000)"]}
+{"tick":0,"type":"maneuver_selected","aircraft":"KLM321","maneuver":"climb","targetAltitude":32000,"reason":"ITY900 has emergency or low-fuel priority"}
+{"tick":0,"type":"belief_update","agent":"sector_controller","belief":"priority(ITY900,emergency)"}
+{"tick":0,"type":"explanation","agent":"explanation_agent","message":"KLM321 climbed because ITY900 had higher symbolic priority due to low fuel."}

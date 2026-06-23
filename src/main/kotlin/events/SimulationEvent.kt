@@ -107,3 +107,33 @@ data class ExplanationEvent(
         require(message.isNotBlank()) { "Explanation message must not be blank." }
     }
 }
+
+data class WeatherZoneActivatedEvent(
+    override val tick: Int,
+    val zone: String,
+    val x: Double,
+    val y: Double,
+    val radius: Double,
+) : SimulationEvent {
+    override val type: String = "weather_zone_activated"
+
+    init {
+        require(tick >= 0) { "Event tick must be non-negative." }
+        require(zone.isNotBlank()) { "Weather zone id must not be blank." }
+        require(radius > 0.0) { "Weather zone radius must be positive." }
+    }
+}
+
+data class ReplanningTriggeredEvent(
+    override val tick: Int,
+    val aircraft: String,
+    val reason: String,
+) : SimulationEvent {
+    override val type: String = "replanning_triggered"
+
+    init {
+        require(tick >= 0) { "Event tick must be non-negative." }
+        require(aircraft.isNotBlank()) { "Aircraft id must not be blank." }
+        require(reason.isNotBlank()) { "Replanning reason must not be blank." }
+    }
+}

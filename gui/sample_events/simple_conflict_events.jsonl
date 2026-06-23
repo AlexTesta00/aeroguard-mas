@@ -1,0 +1,14 @@
+{"tick":0,"type":"aircraft_state","aircraft":"AZA123","x":0.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":0,"type":"aircraft_state","aircraft":"DLH456","x":10.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"AZA123","x":0.7,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"DLH456","x":9.3,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":2,"type":"aircraft_state","aircraft":"AZA123","x":1.4,"y":1.4,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":2,"type":"aircraft_state","aircraft":"DLH456","x":8.6,"y":1.4,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":3,"type":"aircraft_state","aircraft":"AZA123","x":2.1,"y":2.1,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":3,"type":"aircraft_state","aircraft":"DLH456","x":7.9,"y":2.1,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":0,"type":"conflict_detected","aircraft":["AZA123","DLH456"],"severity":"predicted","horizontalDistance":4.3,"verticalDistance":0,"predictedAtTick":4}
+{"tick":0,"type":"plan_generated","planner":"strips","aircraft":"DLH456","actions":["climb(DLH456,32000)"]}
+{"tick":0,"type":"maneuver_selected","aircraft":"DLH456","maneuver":"climb","targetAltitude":32000,"reason":"Increase vertical separation"}
+{"tick":0,"type":"belief_update","agent":"sector_controller","belief":"resolution_plan(predicted-0-4-AZA123-DLH456)"}
+{"tick":0,"type":"explanation","agent":"explanation_agent","message":"STRIPS generated plan with actions [climb(DLH456,32000)] for the predicted conflict."}
+{"tick":0,"type":"explanation","agent":"sector_controller","message":"DLH456 was selected because both aircraft had equal priority and tie-break was deterministic."}

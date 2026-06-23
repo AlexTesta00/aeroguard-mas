@@ -5,6 +5,7 @@ import domain.ResolutionPlan
 import domain.SimulationState
 import planning.formatAsPlannerAction
 import reasoning.SafetyReasoner
+import replanning.WeatherReplanningDecision
 import simulation.SimulationRunResult
 
 class ExplanationService(
@@ -74,6 +75,39 @@ class ExplanationService(
                 decisionId = "selected_resolution_${plan.id}",
                 message = plan.explanation,
                 supportingFacts = priorityFacts(conflict, state),
+            ),
+        )
+    }
+
+    fun explainWeatherReplanning(decision: WeatherReplanningDecision): List<DecisionExplanation> {
+        val actions =
+            decision.resolutionPlan.maneuvers.joinToString { maneuver ->
+                maneuver.formatAsPlannerAction()
+            }
+
+        return listOf(
+            DecisionExplanation(
+                tick = decision.tick,
+                agent = "explanation_agent",
+                decisionId = "weather_replanning_${decision.zone.id}_${decision.aircraftId}",
+                message =
+                    """Weather replanning was triggered for
+                    |${decision.aircraftId} because weather zone
+                    |${decision.zone.id} became active near the planned route.
+                    """.trimMargin(),
+                supportingFacts =
+                    listOf(
+                        "weather_zone=${decision.zone.id}",
+                        "aircraft=${decision.aircraftId}",
+                        "actions=[$actions]",
+                    ),
+            ),
+            DecisionExplanation(
+                tick = decision.tick,
+                agent = "resolution_planner",
+                decisionId = "weather_plan_${decision.resolutionPlan.id}",
+                message = decision.resolutionPlan.explanation,
+                supportingFacts = listOf("planner=strips"),
             ),
         )
     }

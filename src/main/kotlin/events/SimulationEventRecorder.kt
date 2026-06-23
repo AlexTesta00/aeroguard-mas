@@ -14,11 +14,13 @@ class SimulationEventRecorder(
         runResult: SimulationRunResult,
         resolutionPlan: ResolutionPlan?,
         explanations: List<DecisionExplanation>,
+        additionalEvents: List<SimulationEvent> = emptyList(),
     ) {
         emitAircraftStates(runResult)
         emitConflicts(runResult.currentConflicts)
         emitConflicts(runResult.predictedConflicts)
         emitPlan(resolutionPlan)
+        emitAdditionalEvents(additionalEvents)
         emitExplanations(explanations)
     }
 
@@ -102,6 +104,14 @@ class SimulationEventRecorder(
                 belief = "resolution_plan(${plan.conflictId})",
             ),
         )
+    }
+
+    private fun emitAdditionalEvents(events: List<SimulationEvent>) {
+        events
+            .sortedWith(compareBy<SimulationEvent> { it.tick }.thenBy { it.type })
+            .forEach { event ->
+                sink.emit(event)
+            }
     }
 
     private fun emitExplanations(explanations: List<DecisionExplanation>) {

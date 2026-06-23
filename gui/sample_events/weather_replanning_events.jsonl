@@ -1,0 +1,15 @@
+{"tick":0,"type":"aircraft_state","aircraft":"RYR700","x":0.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":0,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":0.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"RYR700","x":0.7,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":1.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":2,"type":"aircraft_state","aircraft":"RYR700","x":1.4,"y":1.4,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":2,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":2.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":3,"type":"weather_zone_activated","zone":"WX1","x":5.0,"y":5.0,"radius":2.5}
+{"tick":3,"type":"replanning_triggered","aircraft":"RYR700","reason":"Weather zone WX1 blocks the nominal route"}
+{"tick":3,"type":"belief_update","agent":"sector_controller","belief":"weather_zone_active(WX1)"}
+{"tick":3,"type":"belief_update","agent":"resolution_planner","belief":"weather_replanning(RYR700,WX1)"}
+{"tick":3,"type":"plan_generated","planner":"strips","aircraft":"RYR700","actions":["avoid_weather_zone(RYR700)","reroute_to_waypoint(RYR700,SAFE_WX1)"]}
+{"tick":3,"type":"maneuver_selected","aircraft":"RYR700","maneuver":"avoid_weather_zone","reason":"Weather zone WX1 blocks the nominal route"}
+{"tick":3,"type":"maneuver_selected","aircraft":"RYR700","maneuver":"reroute_to_waypoint","reason":"Reroute around weather zone WX1"}
+{"tick":3,"type":"explanation","agent":"explanation_agent","message":"Weather replanning was triggered for RYR700 because weather zone WX1 became active near the planned route."}
+{"tick":3,"type":"explanation","agent":"resolution_planner","message":"Weather replanning selected avoid_weather_zone(RYR700), reroute_to_waypoint(RYR700,SAFE_WX1) because zone WX1 became active near the route."}
