@@ -1,3 +1,26 @@
+## [0.3.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.2.0...v0.3.0) (2026-06-23)
+
+### Features
+
+* **cli:** include weather replanning scenarios in run ([e9c2da4](https://github.com/AlexTesta00/aeroguard-mas/commit/e9c2da414d0fd0210024f7384b692afd487f4493))
+* **cli:** run scenarios with managed simulation ([6d30a56](https://github.com/AlexTesta00/aeroguard-mas/commit/6d30a5611ff7a881de4187eb8a52f3f6d480d04b))
+* **events:** added weather replanning events ([a355177](https://github.com/AlexTesta00/aeroguard-mas/commit/a35517785045b12a88fded929ce06b57a1b6e253))
+* **events:** record additional replanning events ([232948d](https://github.com/AlexTesta00/aeroguard-mas/commit/232948dd9fe6bfcf32cee0c74e8701b67e8d148a))
+* **explanation:** explain weather replanning detection ([320df86](https://github.com/AlexTesta00/aeroguard-mas/commit/320df86ffd7ef65c66cb3ee2f1e457ecc6c83180))
+* **gui:** add sample replay events ([d947293](https://github.com/AlexTesta00/aeroguard-mas/commit/d9472936c78fce5c9c4ba4a44e7b490475b1ec67))
+* **gui:** added JSONL event validator ([2ef63fc](https://github.com/AlexTesta00/aeroguard-mas/commit/2ef63fc2b64e6a6f6281e169d695011ef24d477d))
+* **gui:** added Streamlit app with event loading ([d9bd494](https://github.com/AlexTesta00/aeroguard-mas/commit/d9bd4942745d0e0e131aea746b5c147ce7cd2ff0))
+* **gui:** improve aircraft symbols and altitude scaling ([82f336b](https://github.com/AlexTesta00/aeroguard-mas/commit/82f336b32babdf8909a60303d6b57ea02b926233))
+* **gui:** validate weather replanning events ([0fab474](https://github.com/AlexTesta00/aeroguard-mas/commit/0fab474e7fde19c3aa2ac9c9444556be2de7ddac))
+* **gui:** visualize applied manuvers and separation ([aa02203](https://github.com/AlexTesta00/aeroguard-mas/commit/aa02203d0840584d4ee4c0efaa6bb800947d9b97))
+* **replanning:** added weather replanning service ([af4998d](https://github.com/AlexTesta00/aeroguard-mas/commit/af4998d2896a05b020b8d0a38b0f1e4c1143c164))
+* **simulation:** apply manuvers to simulation state ([9519841](https://github.com/AlexTesta00/aeroguard-mas/commit/9519841bfa6381b8b777f22e33ab2151d7e9ae7e))
+* **simulation:** run managed simulation with planned maneuvers ([711320f](https://github.com/AlexTesta00/aeroguard-mas/commit/711320fbabb3fe2ed23a0f03bb6c814d799c5e7c))
+
+### Bug Fixes
+
+* **gui:** fix list events bug ([d017349](https://github.com/AlexTesta00/aeroguard-mas/commit/d01734959dd5e082e6c711b41fd78a713d49dd0a))
+
 ## [0.2.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.1.0...v0.2.0) (2026-06-22)
 
 ### Features
