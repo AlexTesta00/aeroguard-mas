@@ -17,6 +17,7 @@ class SimulationEventRecorder(
         additionalEvents: List<SimulationEvent> = emptyList(),
     ) {
         emitAircraftStates(runResult)
+        emitRouteSnapshots(runResult)
         emitConflicts(runResult.currentConflicts)
         emitConflicts(runResult.predictedConflicts)
         emitPlan(resolutionPlan)
@@ -41,6 +42,32 @@ class SimulationEventRecorder(
                                 speed = aircraft.velocity.horizontalUnitsPerTick,
                                 status = aircraft.emergencyStatus.toEventStatus(),
                                 priority = aircraft.priority.name,
+                            ),
+                        )
+                    }
+            }
+    }
+
+    private fun emitRouteSnapshots(runResult: SimulationRunResult) {
+        runResult.states
+            .sortedBy { state -> state.tick }
+            .forEach { state ->
+                state.aircraft.values
+                    .sortedBy { aircraft -> aircraft.id }
+                    .filter { aircraft -> aircraft.route.waypoints.isNotEmpty() }
+                    .forEach { aircraft ->
+                        sink.emit(
+                            RouteSnapshotEvent(
+                                tick = state.tick,
+                                aircraft = aircraft.id,
+                                waypoints =
+                                    aircraft.route.waypoints.map { waypoint ->
+                                        RouteWaypointDto(
+                                            name = waypoint.name,
+                                            x = waypoint.position.x,
+                                            y = waypoint.position.y,
+                                        )
+                                    },
                             ),
                         )
                     }

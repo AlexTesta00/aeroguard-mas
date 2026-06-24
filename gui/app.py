@@ -178,6 +178,7 @@ def _render_map_tab(
     conflicts_df = _events_df(grouped.get("conflict_detected", []))
     maneuvers_df = _events_df(grouped.get("maneuver_selected", []))
     weather_df = _events_df(grouped.get("weather_zone_activated", []))
+    routes_df = _events_df(grouped.get("route_snapshot", []))
 
     left, right = st.columns([2, 1])
 
@@ -186,9 +187,11 @@ def _render_map_tab(
             st.warning("No aircraft state events available for this tick.")
         else:
             fig = _build_aircraft_map_figure(
+                df=df,
                 aircraft_df=aircraft_df,
                 conflicts_df=conflicts_df,
                 weather_df=weather_df,
+                routes_df=routes_df,
                 selected_tick=selected_tick,
             )
 
@@ -259,6 +262,7 @@ def _render_timeline_tab(
     conflicts = _events_df(grouped.get("conflict_detected", []))
     plans = _events_df(grouped.get("plan_generated", []))
     replanning = _events_df(grouped.get("replanning_triggered", []))
+    routes = _events_df(grouped.get("route_snapshot", []))
 
     col1, col2 = st.columns(2)
 
@@ -281,6 +285,13 @@ def _render_timeline_tab(
         st.write("No replanning events.")
     else:
         _show_dataframe(replanning)
+
+    st.markdown("### Latest route snapshots")
+    latest_routes = _latest_route_snapshots(routes, selected_tick)
+    if latest_routes.empty:
+        st.write("No route snapshot events.")
+    else:
+        _show_dataframe(latest_routes)
 
     st.markdown("### Events at selected tick")
     tick_df = df[df["tick"] == selected_tick].copy()
@@ -404,14 +415,19 @@ def _aircraft_states_at_tick(df: pd.DataFrame, tick: int) -> pd.DataFrame:
 
 
 def _build_aircraft_map_figure(
+        df: pd.DataFrame,
         aircraft_df: pd.DataFrame,
         conflicts_df: pd.DataFrame,
         weather_df: pd.DataFrame,
+        routes_df: pd.DataFrame,
         selected_tick: int,
 ) -> go.Figure:
     plot_df = _aircraft_display_positions(aircraft_df)
 
     fig = go.Figure()
+
+    _add_aircraft_trails(fig, df, selected_tick)
+    _add_route_snapshots(fig, routes_df, aircraft_df, selected_tick)
 
     for _, row in plot_df.iterrows():
         aircraft = row["aircraft"]
@@ -506,6 +522,133 @@ def _aircraft_display_positions(aircraft_df: pd.DataFrame) -> pd.DataFrame:
             )
 
     return plot_df
+
+
+def _add_aircraft_trails(
+        fig: go.Figure,
+        df: pd.DataFrame,
+        selected_tick: int,
+) -> None:
+    history = df[
+        (df["type"] == "aircraft_state")
+        & (df["tick"] <= selected_tick)
+        ].copy()
+
+    if history.empty:
+        return
+
+    for aircraft, aircraft_history in history.groupby("aircraft"):
+        aircraft_history = aircraft_history.sort_values("tick")
+
+        fig.add_trace(
+            go.Scatter(
+                x=aircraft_history["x"],
+                y=aircraft_history["y"],
+                mode="lines",
+                name=f"{aircraft} trail",
+                line={"dash": "solid", "width": 2},
+                hoverinfo="skip",
+                showlegend=True,
+            )
+        )
+
+
+def _add_route_snapshots(
+        fig: go.Figure,
+        routes_df: pd.DataFrame,
+        aircraft_df: pd.DataFrame,
+        selected_tick: int,
+) -> None:
+    if routes_df.empty:
+        return
+
+    visible_routes = routes_df[routes_df["tick"] <= selected_tick].copy()
+
+    if visible_routes.empty:
+        return
+
+    visible_routes = visible_routes.sort_values(["aircraft", "tick"])
+    latest_routes = visible_routes.groupby("aircraft").tail(1)
+
+    current_positions = {
+        row["aircraft"]: (float(row["x"]), float(row["y"]))
+        for _, row in aircraft_df.iterrows()
+        if "aircraft" in row and "x" in row and "y" in row
+    }
+
+    for _, route in latest_routes.iterrows():
+        aircraft = route.get("aircraft")
+        waypoints = route.get("waypoints")
+
+        if not isinstance(aircraft, str):
+            continue
+
+        if not isinstance(waypoints, list) or not waypoints:
+            continue
+
+        route_xs: list[float] = []
+        route_ys: list[float] = []
+        waypoint_xs: list[float] = []
+        waypoint_ys: list[float] = []
+        waypoint_labels: list[str] = []
+
+        if aircraft in current_positions:
+            current_x, current_y = current_positions[aircraft]
+            route_xs.append(current_x)
+            route_ys.append(current_y)
+
+        for waypoint in waypoints:
+            if not isinstance(waypoint, dict):
+                continue
+
+            x = waypoint.get("x")
+            y = waypoint.get("y")
+            name = waypoint.get("name", "WP")
+
+            if not isinstance(x, (int, float)):
+                continue
+
+            if not isinstance(y, (int, float)):
+                continue
+
+            route_xs.append(float(x))
+            route_ys.append(float(y))
+            waypoint_xs.append(float(x))
+            waypoint_ys.append(float(y))
+            waypoint_labels.append(str(name))
+
+        if not waypoint_xs:
+            continue
+
+        fig.add_trace(
+            go.Scatter(
+                x=route_xs,
+                y=route_ys,
+                mode="lines",
+                name=f"{aircraft} planned route",
+                line={"dash": "dash", "width": 2},
+                hoverinfo="skip",
+                showlegend=True,
+            )
+        )
+
+        fig.add_trace(
+            go.Scatter(
+                x=waypoint_xs,
+                y=waypoint_ys,
+                mode="markers+text",
+                text=waypoint_labels,
+                textposition="bottom center",
+                name=f"{aircraft} waypoints",
+                marker={"symbol": "diamond", "size": 10},
+                hovertext=[
+                    f"{aircraft} waypoint {label}"
+                    for label in waypoint_labels
+                ],
+                hoverinfo="text",
+                showlegend=True,
+            )
+        )
 
 
 def _add_conflict_lines(
@@ -747,6 +890,20 @@ def _render_vertical_separation_summary(aircraft_df: pd.DataFrame) -> None:
     _show_dataframe(pd.DataFrame(rows))
 
 
+def _latest_route_snapshots(
+        routes_df: pd.DataFrame,
+        selected_tick: int,
+) -> pd.DataFrame:
+    if routes_df.empty:
+        return routes_df
+
+    visible_routes = routes_df[routes_df["tick"] <= selected_tick].copy()
+    if visible_routes.empty:
+        return visible_routes
+
+    return visible_routes.sort_values(["aircraft", "tick"]).groupby("aircraft").tail(1)
+
+
 def _events_df(events: list[JsonEvent]) -> pd.DataFrame:
     if not events:
         return pd.DataFrame()
@@ -823,7 +980,7 @@ def _arrow_safe_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 def _format_cell_for_display(value: Any) -> str:
     if isinstance(value, list):
-        return ", ".join(str(item) for item in value)
+        return json.dumps(value, ensure_ascii=False)
 
     if isinstance(value, (tuple, set)):
         return ", ".join(str(item) for item in value)

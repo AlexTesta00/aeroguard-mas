@@ -96,6 +96,24 @@ fun SimulationEvent.toJsonObject(): JsonObject =
                 put("aircraft", aircraft)
                 put("reason", reason)
             }
+
+        is RouteSnapshotEvent ->
+            buildJsonObject {
+                put("tick", tick)
+                put("type", type)
+                put("aircraft", aircraft)
+                putJsonArray("waypoints") {
+                    waypoints.forEach { waypoint ->
+                        add(
+                            buildJsonObject {
+                                put("name", waypoint.name)
+                                put("x", waypoint.x)
+                                put("y", waypoint.y)
+                            },
+                        )
+                    }
+                }
+            }
     }
 
 fun SimulationEvent.toJsonLine(): String = toJsonObject().toString()
