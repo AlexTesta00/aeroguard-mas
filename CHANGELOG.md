@@ -1,3 +1,16 @@
+## [0.4.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.3.0...v0.4.0) (2026-06-24)
+
+### Features
+
+* **gui:** visualize routes and waypoints ([533b591](https://github.com/AlexTesta00/aeroguard-mas/commit/533b591fe4e627ff3d4b997ae20967643928a86c))
+* **planning:** prevent secondary conflicts during resolution ([9d2198d](https://github.com/AlexTesta00/aeroguard-mas/commit/9d2198d1952559e96cc0f4febe73ec8c27ba5950))
+* **scenarios:** added reak-world inspired conflict scenarios ([127ad36](https://github.com/AlexTesta00/aeroguard-mas/commit/127ad36a14285eea391f60549ca710cff18b90ca))
+
+### Bug Fixes
+
+* **gui:** fix default scenarios .jsonl ([15feb05](https://github.com/AlexTesta00/aeroguard-mas/commit/15feb05d695a5ac487e4e63a4b81c651ba8cb230))
+* **replanning:** route aircraft to lateral weather bypass in weather situation ([892d832](https://github.com/AlexTesta00/aeroguard-mas/commit/892d832d828a41e0e2a9b5318b8166ac81c8dbda))
+
 ## [0.3.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.2.0...v0.3.0) (2026-06-23)
 
 ### Features
