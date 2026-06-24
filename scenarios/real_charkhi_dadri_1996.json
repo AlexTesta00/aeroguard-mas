@@ -1,0 +1,42 @@
+{
+  "name": "real_charkhi_dadri_1996",
+  "maxTicks": 14,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "SVA763",
+      "x": 0.0,
+      "y": 5.0,
+      "altitude": 14000,
+      "speed": 1.0,
+      "priority": "high",
+      "emergency": false,
+      "route": [
+        {
+          "name": "DADRI_HEADON",
+          "x": 10.0,
+          "y": 5.0
+        }
+      ]
+    },
+    {
+      "id": "KZA1907",
+      "x": 10.0,
+      "y": 5.0,
+      "altitude": 14000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "DADRI_HEADON",
+          "x": 0.0,
+          "y": 5.0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "real_grand_canyon_1956",
+  "maxTicks": 14,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "TWA2",
+      "x": 0.0,
+      "y": 0.0,
+      "altitude": 21000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "GRAND_CANYON_CROSS",
+          "x": 8.0,
+          "y": 8.0
+        }
+      ]
+    },
+    {
+      "id": "UAL718",
+      "x": 8.0,
+      "y": 0.0,
+      "altitude": 21000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "GRAND_CANYON_CROSS",
+          "x": 0.0,
+          "y": 8.0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "real_zagreb_1976",
+  "maxTicks": 12,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "BAW476",
+      "x": 0.0,
+      "y": 6.0,
+      "altitude": 33000,
+      "speed": 1.0,
+      "priority": "high",
+      "emergency": false,
+      "route": [
+        {
+          "name": "ZAGREB_VOR",
+          "x": 6.0,
+          "y": 6.0
+        }
+      ]
+    },
+    {
+      "id": "ADR550",
+      "x": 6.0,
+      "y": 0.0,
+      "altitude": 33000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "ZAGREB_VOR",
+          "x": 6.0,
+          "y": 6.0
+        }
+      ]
+    }
+  ]
+}
