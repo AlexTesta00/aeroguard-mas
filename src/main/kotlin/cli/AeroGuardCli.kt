@@ -189,12 +189,7 @@ fun main(args: Array<String>) {
     println()
     printAppliedManeuvers(managedSimulation.appliedManeuvers)
 
-    val weatherDecisions =
-        WeatherReplanningService(reasoner)
-            .planWeatherReplanning(
-                scenario = scenario,
-                runResult = result,
-            )
+    val weatherDecisions = managedSimulation.weatherReplanningDecisions
 
     println()
     printWeatherDecisions(weatherDecisions)

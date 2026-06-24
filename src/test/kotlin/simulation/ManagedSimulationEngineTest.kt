@@ -82,4 +82,51 @@ class ManagedSimulationEngineTest {
         assertTrue(result.runResult.predictedConflicts.isNotEmpty())
         assertEquals(1, result.appliedManeuvers.first().tick)
     }
+
+    @Test
+    fun `managed simulation reroutes aircraft around active weather zone`() {
+        val scenario = JsonScenarioLoader().load(Path.of("scenarios/weather_replanning.json"))
+        val reasoner = TuPrologSafetyReasoner.fromClasspath()
+
+        val result =
+            ManagedSimulationEngine(
+                safetyReasoner = reasoner,
+                predictionHorizonTicks = 6,
+            ).run(scenario)
+
+        assertTrue(
+            result.weatherReplanningDecisions.isNotEmpty(),
+            "Weather replanning should be triggered for weather_replanning scenario.",
+        )
+
+        val zone = scenario.weatherZones.first { weatherZone -> weatherZone.id == "WX1" }
+        val activationTick = result.weatherReplanningDecisions.first().tick
+
+        val ryrStatesAfterActivation =
+            result.runResult.states
+                .filter { state -> state.tick >= activationTick }
+                .map { state ->
+                    val aircraft = state.aircraft.getValue("RYR700")
+                    state.tick to aircraft
+                }
+
+        val violatingStates =
+            ryrStatesAfterActivation.filter { (_, aircraft) ->
+                aircraft.position.distanceTo(zone.center) <= zone.radius
+            }
+
+        assertTrue(
+            violatingStates.isEmpty(),
+            buildString {
+                appendLine("RYR700 should not enter weather zone ${zone.id} after replanning is applied.")
+                appendLine("Violating states:")
+                violatingStates.forEach { (tick, aircraft) ->
+                    appendLine(
+                        "- tick=$tick, position=${aircraft.position}, " +
+                            "distance=${aircraft.position.distanceTo(zone.center)}",
+                    )
+                }
+            },
+        )
+    }
 }
