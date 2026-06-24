@@ -1,15 +1,86 @@
 {"tick":0,"type":"aircraft_state","aircraft":"RYR700","x":0.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
 {"tick":0,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":0.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":1,"type":"aircraft_state","aircraft":"RYR700","x":0.7,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"RYR700","x":0.7071067811865475,"y":0.7071067811865475,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
 {"tick":1,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":1.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":2,"type":"aircraft_state","aircraft":"RYR700","x":1.4,"y":1.4,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":2,"type":"aircraft_state","aircraft":"RYR700","x":1.414213562373095,"y":1.414213562373095,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
 {"tick":2,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":2.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":3,"type":"weather_zone_activated","zone":"WX1","x":5.0,"y":5.0,"radius":2.5}
-{"tick":3,"type":"replanning_triggered","aircraft":"RYR700","reason":"Weather zone WX1 blocks the nominal route"}
+{"tick":3,"type":"aircraft_state","aircraft":"RYR700","x":2.1213203435596424,"y":2.1213203435596424,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":3,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":3.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":4,"type":"aircraft_state","aircraft":"RYR700","x":2.82842712474619,"y":1.414213562373095,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":4,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":4.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":5,"type":"aircraft_state","aircraft":"RYR700","x":3.5355339059327373,"y":0.7071067811865475,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":5,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":5.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":6,"type":"aircraft_state","aircraft":"RYR700","x":4.242640687119285,"y":1.1102230246251565E-16,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":6,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":6.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":7,"type":"aircraft_state","aircraft":"RYR700","x":4.949747468305833,"y":-0.7071067811865474,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":7,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":7.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":8,"type":"aircraft_state","aircraft":"RYR700","x":5.65685424949238,"y":-1.414213562373095,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":8,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":8.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":9,"type":"aircraft_state","aircraft":"RYR700","x":6.363961030678928,"y":-2.1213203435596424,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":9,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":9.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":10,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.82842712474619,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":10,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":11,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.8284271247461903,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":11,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":12,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.8284271247461903,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":12,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":13,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.8284271247461903,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":13,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":14,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.8284271247461903,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":14,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":15,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.8284271247461903,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":15,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":16,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.8284271247461903,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":16,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":17,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.8284271247461903,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":17,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":18,"type":"aircraft_state","aircraft":"RYR700","x":7.0710678118654755,"y":-2.8284271247461903,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":18,"type":"aircraft_state","aircraft":"SWR800","x":10.0,"y":10.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":0,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"WX_ENTRY","x":5.0,"y":5.0},{"name":"WX_EXIT","x":10.0,"y":10.0}]}
+{"tick":0,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":1,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"WX_ENTRY","x":5.0,"y":5.0},{"name":"WX_EXIT","x":10.0,"y":10.0}]}
+{"tick":1,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":2,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"WX_ENTRY","x":5.0,"y":5.0},{"name":"WX_EXIT","x":10.0,"y":10.0}]}
+{"tick":2,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":3,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":3,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":4,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":4,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":5,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":5,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":6,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":6,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":7,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":7,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":8,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":8,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":9,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":9,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":10,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":10,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":11,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":11,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":12,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":12,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":13,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":13,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":14,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":14,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":15,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":15,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":16,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":16,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":17,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":17,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
+{"tick":18,"type":"route_snapshot","aircraft":"RYR700","waypoints":[{"name":"SAFE_WX1_RYR700","x":7.0710678118654755,"y":-2.8284271247461903}]}
+{"tick":18,"type":"route_snapshot","aircraft":"SWR800","waypoints":[{"name":"SAFE1","x":10.0,"y":10.0}]}
 {"tick":3,"type":"belief_update","agent":"sector_controller","belief":"weather_zone_active(WX1)"}
 {"tick":3,"type":"belief_update","agent":"resolution_planner","belief":"weather_replanning(RYR700,WX1)"}
-{"tick":3,"type":"plan_generated","planner":"strips","aircraft":"RYR700","actions":["avoid_weather_zone(RYR700)","reroute_to_waypoint(RYR700,SAFE_WX1)"]}
 {"tick":3,"type":"maneuver_selected","aircraft":"RYR700","maneuver":"avoid_weather_zone","reason":"Weather zone WX1 blocks the nominal route"}
 {"tick":3,"type":"maneuver_selected","aircraft":"RYR700","maneuver":"reroute_to_waypoint","reason":"Reroute around weather zone WX1"}
-{"tick":3,"type":"explanation","agent":"explanation_agent","message":"Weather replanning was triggered for RYR700 because weather zone WX1 became active near the planned route."}
-{"tick":3,"type":"explanation","agent":"resolution_planner","message":"Weather replanning selected avoid_weather_zone(RYR700), reroute_to_waypoint(RYR700,SAFE_WX1) because zone WX1 became active near the route."}
+{"tick":3,"type":"plan_generated","planner":"strips","aircraft":"RYR700","actions":["avoid_weather_zone(RYR700)","reroute_to_waypoint(RYR700,SAFE_WX1_RYR700)"]}
+{"tick":3,"type":"replanning_triggered","aircraft":"RYR700","reason":"Weather zone WX1 blocks the nominal route"}
+{"tick":3,"type":"weather_zone_activated","zone":"WX1","x":5.0,"y":5.0,"radius":2.5}
+{"tick":18,"type":"explanation","agent":"explanation_agent","message":"No conflicts were detected in scenario 'weather_replanning'."}
+{"tick":3,"type":"explanation","agent":"explanation_agent","message":"Weather replanning was triggered for\nRYR700 because weather zone\nWX1 became active near the planned route."}
+{"tick":3,"type":"explanation","agent":"resolution_planner","message":"Weather replanning selected avoid_weather_zone(RYR700), reroute_to_waypoint(RYR700,SAFE_WX1_RYR700) because zone WX1 became active near the route."}

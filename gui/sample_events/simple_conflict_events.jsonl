@@ -1,14 +1,58 @@
 {"tick":0,"type":"aircraft_state","aircraft":"AZA123","x":0.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
 {"tick":0,"type":"aircraft_state","aircraft":"DLH456","x":10.0,"y":0.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":1,"type":"aircraft_state","aircraft":"AZA123","x":0.7,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":1,"type":"aircraft_state","aircraft":"DLH456","x":9.3,"y":0.7,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":2,"type":"aircraft_state","aircraft":"AZA123","x":1.4,"y":1.4,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":2,"type":"aircraft_state","aircraft":"DLH456","x":8.6,"y":1.4,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":3,"type":"aircraft_state","aircraft":"AZA123","x":2.1,"y":2.1,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":3,"type":"aircraft_state","aircraft":"DLH456","x":7.9,"y":2.1,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
-{"tick":0,"type":"conflict_detected","aircraft":["AZA123","DLH456"],"severity":"predicted","horizontalDistance":4.3,"verticalDistance":0,"predictedAtTick":4}
+{"tick":1,"type":"aircraft_state","aircraft":"AZA123","x":0.7071067811865475,"y":0.7071067811865475,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":1,"type":"aircraft_state","aircraft":"DLH456","x":9.292893218813452,"y":0.7071067811865475,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":2,"type":"aircraft_state","aircraft":"AZA123","x":1.414213562373095,"y":1.414213562373095,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":2,"type":"aircraft_state","aircraft":"DLH456","x":8.585786437626904,"y":1.414213562373095,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":3,"type":"aircraft_state","aircraft":"AZA123","x":2.1213203435596424,"y":2.1213203435596424,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":3,"type":"aircraft_state","aircraft":"DLH456","x":7.878679656440356,"y":2.121320343559643,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":4,"type":"aircraft_state","aircraft":"AZA123","x":2.82842712474619,"y":2.82842712474619,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":4,"type":"aircraft_state","aircraft":"DLH456","x":7.171572875253809,"y":2.8284271247461903,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":5,"type":"aircraft_state","aircraft":"AZA123","x":3.5355339059327373,"y":3.5355339059327373,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":5,"type":"aircraft_state","aircraft":"DLH456","x":6.464466094067262,"y":3.5355339059327378,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":6,"type":"aircraft_state","aircraft":"AZA123","x":4.242640687119285,"y":4.242640687119285,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":6,"type":"aircraft_state","aircraft":"DLH456","x":5.757359312880714,"y":4.242640687119286,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":7,"type":"aircraft_state","aircraft":"AZA123","x":4.949747468305833,"y":4.949747468305833,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":7,"type":"aircraft_state","aircraft":"DLH456","x":5.050252531694166,"y":4.949747468305834,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":8,"type":"aircraft_state","aircraft":"AZA123","x":5.0,"y":5.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":8,"type":"aircraft_state","aircraft":"DLH456","x":5.0,"y":5.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":9,"type":"aircraft_state","aircraft":"AZA123","x":5.0,"y":5.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":9,"type":"aircraft_state","aircraft":"DLH456","x":5.0,"y":5.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":10,"type":"aircraft_state","aircraft":"AZA123","x":5.0,"y":5.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":10,"type":"aircraft_state","aircraft":"DLH456","x":5.0,"y":5.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":11,"type":"aircraft_state","aircraft":"AZA123","x":5.0,"y":5.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":11,"type":"aircraft_state","aircraft":"DLH456","x":5.0,"y":5.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":12,"type":"aircraft_state","aircraft":"AZA123","x":5.0,"y":5.0,"altitude":30000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":12,"type":"aircraft_state","aircraft":"DLH456","x":5.0,"y":5.0,"altitude":32000,"speed":1.0,"status":"normal","priority":"NORMAL"}
+{"tick":0,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":0,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":1,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":1,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":2,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":2,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":3,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":3,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":4,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":4,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":5,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":5,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":6,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":6,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":7,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":7,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":8,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":8,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":9,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":9,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":10,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":10,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":11,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":11,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":12,"type":"route_snapshot","aircraft":"AZA123","waypoints":[{"name":"W1","x":5.0,"y":5.0}]}
+{"tick":12,"type":"route_snapshot","aircraft":"DLH456","waypoints":[{"name":"W2","x":5.0,"y":5.0}]}
+{"tick":0,"type":"conflict_detected","aircraft":["AZA123","DLH456"],"severity":"high","horizontalDistance":4.343145750507619,"verticalDistance":0,"predictedAtTick":4}
 {"tick":0,"type":"plan_generated","planner":"strips","aircraft":"DLH456","actions":["climb(DLH456,32000)"]}
 {"tick":0,"type":"maneuver_selected","aircraft":"DLH456","maneuver":"climb","targetAltitude":32000,"reason":"Increase vertical separation"}
 {"tick":0,"type":"belief_update","agent":"sector_controller","belief":"resolution_plan(predicted-0-4-AZA123-DLH456)"}
-{"tick":0,"type":"explanation","agent":"explanation_agent","message":"STRIPS generated plan with actions [climb(DLH456,32000)] for the predicted conflict."}
-{"tick":0,"type":"explanation","agent":"sector_controller","message":"DLH456 was selected because both aircraft had equal priority and tie-break was deterministic."}
+{"tick":0,"type":"explanation","agent":"explanation_agent","message":"STRIPS generated plan 'strips-predicted-0-4-AZA123-DLH456' with actions [climb(DLH456,32000)] for conflict 'predicted-0-4-AZA123-DLH456'."}
+{"tick":0,"type":"explanation","agent":"sector_controller","message":"STRIPS selected climb(DLH456,32000) for conflict predicted-0-4-AZA123-DLH456. Aircraft DLH456 was selected for maneuvering based on symbolic priority scores: AZA123=10, DLH456=10."}
