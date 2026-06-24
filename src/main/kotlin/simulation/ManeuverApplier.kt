@@ -88,14 +88,9 @@ class ManeuverApplier {
             return aircraft
         }
 
-        val remainingWaypoints =
-            aircraft.route.waypoints
-                .drop(aircraft.activeWaypointIndex)
-                .filterNot { waypoint -> waypoint.name == targetWaypoint.name }
-
         val newRoute =
             Route(
-                waypoints = listOf(targetWaypoint) + remainingWaypoints,
+                waypoints = listOf(targetWaypoint),
             )
 
         return aircraft.copy(

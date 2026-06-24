@@ -1,0 +1,42 @@
+{
+  "name": "real_cerritos_1986",
+  "maxTicks": 12,
+  "separation": {
+    "horizontal": 4.0,
+    "vertical": 700
+  },
+  "aircraft": [
+    {
+      "id": "AMX498",
+      "x": 0.0,
+      "y": 6.0,
+      "altitude": 6500,
+      "speed": 1.0,
+      "priority": "high",
+      "emergency": false,
+      "route": [
+        {
+          "name": "LAX_APPROACH_FIX",
+          "x": 8.0,
+          "y": 6.0
+        }
+      ]
+    },
+    {
+      "id": "PA28",
+      "x": 5.0,
+      "y": 0.0,
+      "altitude": 6500,
+      "speed": 0.7,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "TCA_INTRUSION_POINT",
+          "x": 5.0,
+          "y": 8.0
+        }
+      ]
+    }
+  ]
+}

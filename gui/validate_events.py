@@ -86,6 +86,12 @@ REQUIRED_FIELDS_BY_TYPE: dict[str, set[str]] = {
         "aircraft",
         "reason",
     },
+    "route_snapshot": {
+        "tick",
+        "type",
+        "aircraft",
+        "waypoints",
+    },
 }
 
 
@@ -173,6 +179,12 @@ def validate_events(events: list[JsonEvent]) -> EventValidationResult:
         if event_type == "plan_generated":
             _validate_plan_event(index, event, errors)
 
+        if event_type == "weather_zone_activated":
+            _validate_weather_zone_event(index, event, errors)
+
+        if event_type == "route_snapshot":
+            _validate_route_snapshot_event(index, event, errors)
+
     return EventValidationResult(
         valid=not errors,
         errors=errors,
@@ -252,6 +264,65 @@ def _validate_plan_event(
 
     if not isinstance(actions, list) or not actions:
         errors.append(f"Plan event #{index} must contain at least one action.")
+
+
+def _validate_weather_zone_event(
+        index: int,
+        event: JsonEvent,
+        errors: list[str],
+) -> None:
+    zone = event.get("zone")
+    radius = event.get("radius")
+
+    if not isinstance(zone, str) or not zone.strip():
+        errors.append(f"Weather-zone event #{index} has invalid zone id.")
+
+    if not isinstance(radius, int | float) or radius <= 0:
+        errors.append(f"Weather-zone event #{index} has invalid radius.")
+
+
+def _validate_route_snapshot_event(
+        index: int,
+        event: JsonEvent,
+        errors: list[str],
+) -> None:
+    aircraft = event.get("aircraft")
+    waypoints = event.get("waypoints")
+
+    if not isinstance(aircraft, str) or not aircraft.strip():
+        errors.append(f"Route snapshot event #{index} has invalid aircraft id.")
+
+    if not isinstance(waypoints, list) or not waypoints:
+        errors.append(
+            f"Route snapshot event #{index} must contain at least one waypoint."
+        )
+        return
+
+    for waypoint_index, waypoint in enumerate(waypoints, start=1):
+        if not isinstance(waypoint, dict):
+            errors.append(
+                f"Route snapshot event #{index} waypoint #{waypoint_index} is not an object."
+            )
+            continue
+
+        name = waypoint.get("name")
+        x = waypoint.get("x")
+        y = waypoint.get("y")
+
+        if not isinstance(name, str) or not name.strip():
+            errors.append(
+                f"Route snapshot event #{index} waypoint #{waypoint_index} has invalid name."
+            )
+
+        if not isinstance(x, int | float):
+            errors.append(
+                f"Route snapshot event #{index} waypoint #{waypoint_index} has invalid x."
+            )
+
+        if not isinstance(y, int | float):
+            errors.append(
+                f"Route snapshot event #{index} waypoint #{waypoint_index} has invalid y."
+            )
 
 
 def _format_validation_result(result: EventValidationResult) -> str:

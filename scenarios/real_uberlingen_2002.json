@@ -1,0 +1,42 @@
+{
+  "name": "real_uberlingen_2002",
+  "maxTicks": 12,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "BTC2937",
+      "x": 0.0,
+      "y": 5.0,
+      "altitude": 36000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "UBERLINGEN_CROSS",
+          "x": 6.0,
+          "y": 5.0
+        }
+      ]
+    },
+    {
+      "id": "DHX611",
+      "x": 6.0,
+      "y": 0.0,
+      "altitude": 36000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "UBERLINGEN_CROSS",
+          "x": 6.0,
+          "y": 5.0
+        }
+      ]
+    }
+  ]
+}

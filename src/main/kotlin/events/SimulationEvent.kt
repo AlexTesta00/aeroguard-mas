@@ -137,3 +137,27 @@ data class ReplanningTriggeredEvent(
         require(reason.isNotBlank()) { "Replanning reason must not be blank." }
     }
 }
+
+data class RouteWaypointDto(
+    val name: String,
+    val x: Double,
+    val y: Double,
+) {
+    init {
+        require(name.isNotBlank()) { "Waypoint name must not be blank." }
+    }
+}
+
+data class RouteSnapshotEvent(
+    override val tick: Int,
+    val aircraft: String,
+    val waypoints: List<RouteWaypointDto>,
+) : SimulationEvent {
+    override val type: String = "route_snapshot"
+
+    init {
+        require(tick >= 0) { "Event tick must be non-negative." }
+        require(aircraft.isNotBlank()) { "Aircraft id must not be blank." }
+        require(waypoints.isNotEmpty()) { "Route snapshot must contain at least one waypoint." }
+    }
+}

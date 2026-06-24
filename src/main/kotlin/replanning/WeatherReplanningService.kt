@@ -3,6 +3,7 @@ package replanning
 import domain.DynamicScenarioEventType
 import domain.Maneuver
 import domain.ManeuverType
+import domain.Position
 import domain.ResolutionPlan
 import domain.Scenario
 import domain.SimulationState
@@ -17,6 +18,7 @@ import events.WeatherZoneActivatedEvent
 import planning.formatAsPlannerAction
 import reasoning.SafetyReasoner
 import simulation.SimulationRunResult
+import kotlin.math.hypot
 
 data class WeatherReplanningDecision(
     val tick: Int,
@@ -54,45 +56,98 @@ class WeatherReplanningService(
                     state.tick == event.tick
                 } ?: runResult.finalState
 
-            scenario.aircraft
-                .filter { aircraft ->
-                    routeIntersectsWeatherZone(
-                        routeWaypoints = aircraft.route.waypoints,
-                        zone = zone,
-                        tick = event.tick,
-                    )
-                }.forEach { aircraft ->
-                    buildDecision(
-                        tick = event.tick,
-                        aircraftId = aircraft.id,
-                        zone = zone,
-                        state = stateAtActivation,
-                    )?.let { decision ->
-                        decisions += decision
-                    }
-                }
+            decisions +=
+                planWeatherReplanningForZone(
+                    scenario = scenario,
+                    state = stateAtActivation,
+                    zone = zone,
+                    tick = event.tick,
+                )
         }
 
         return decisions
     }
 
+    fun planWeatherReplanningForTick(
+        scenario: Scenario,
+        state: SimulationState,
+    ): List<WeatherReplanningDecision> {
+        val weatherActivations =
+            scenario.dynamicEvents
+                .filter { event ->
+                    event.type == DynamicScenarioEventType.ACTIVATE_WEATHER_ZONE &&
+                        event.tick == state.tick
+                }
+
+        if (weatherActivations.isEmpty()) {
+            return emptyList()
+        }
+
+        val decisions = mutableListOf<WeatherReplanningDecision>()
+
+        weatherActivations.forEach { event ->
+            val zone =
+                scenario.weatherZones.firstOrNull { weatherZone ->
+                    weatherZone.id == event.targetId
+                } ?: return@forEach
+
+            decisions +=
+                planWeatherReplanningForZone(
+                    scenario = scenario,
+                    state = state,
+                    zone = zone,
+                    tick = event.tick,
+                )
+        }
+
+        return decisions
+    }
+
+    private fun planWeatherReplanningForZone(
+        scenario: Scenario,
+        state: SimulationState,
+        zone: WeatherZone,
+        tick: Int,
+    ): List<WeatherReplanningDecision> =
+        state.aircraft.values
+            .filter { aircraft ->
+                val remainingRoute =
+                    aircraft.route.waypoints
+                        .drop(aircraft.activeWaypointIndex)
+
+                routeSegmentIntersectsWeatherZone(
+                    aircraftPosition = aircraft.position,
+                    routeWaypoints = remainingRoute,
+                    zone = zone,
+                    tick = tick,
+                )
+            }.mapNotNull { aircraft ->
+                buildDecision(
+                    tick = tick,
+                    aircraftId = aircraft.id,
+                    aircraftPosition = aircraft.position,
+                    zone = zone,
+                    state = state,
+                )
+            }.filter { decision ->
+                scenario.aircraft.any { aircraft -> aircraft.id == decision.aircraftId }
+            }
+
     private fun buildDecision(
         tick: Int,
         aircraftId: String,
+        aircraftPosition: Position,
         zone: WeatherZone,
         state: SimulationState,
     ): WeatherReplanningDecision? {
         val safeWaypoint =
-            Waypoint(
-                name = "SAFE_${zone.id}",
-                position =
-                    domain.Position(
-                        x = zone.center.x + zone.radius + 3.0,
-                        y = zone.center.y + zone.radius + 3.0,
-                    ),
+            buildSafeBypassWaypoint(
+                aircraftId = aircraftId,
+                aircraftPosition = aircraftPosition,
+                zone = zone,
             )
 
-        val maneuvers =
+        val candidateManeuvers =
             listOf(
                 Maneuver(
                     aircraftId = aircraftId,
@@ -105,7 +160,10 @@ class WeatherReplanningService(
                     targetWaypoint = safeWaypoint,
                     reason = "Reroute around weather zone ${zone.id}",
                 ),
-            ).filter { maneuver ->
+            )
+
+        val maneuvers =
+            candidateManeuvers.filter { maneuver ->
                 safetyReasoner.isManeuverAllowed(
                     aircraftId = aircraftId,
                     maneuver = maneuver,
@@ -122,9 +180,9 @@ class WeatherReplanningService(
                 id = "weather-${zone.id}-$aircraftId",
                 conflictId = "weather-${zone.id}",
                 maneuvers = maneuvers,
-                explanation = "Weather replanning selected ${maneuvers.joinToString {
-                    it.formatAsPlannerAction()
-                }} because zone ${zone.id} became active near the route.",
+                explanation = "Weather replanning selected ${
+                    maneuvers.joinToString { maneuver -> maneuver.formatAsPlannerAction() }
+                } because zone ${zone.id} became active near the route.",
             )
 
         val actions =
@@ -143,6 +201,7 @@ class WeatherReplanningService(
                         radius = zone.radius,
                     ),
                 )
+
                 add(
                     ReplanningTriggeredEvent(
                         tick = tick,
@@ -150,6 +209,7 @@ class WeatherReplanningService(
                         reason = "Weather zone ${zone.id} blocks the nominal route",
                     ),
                 )
+
                 add(
                     PlanGeneratedEvent(
                         tick = tick,
@@ -158,6 +218,7 @@ class WeatherReplanningService(
                         actions = actions,
                     ),
                 )
+
                 maneuvers.forEach { maneuver ->
                     add(
                         ManeuverSelectedEvent(
@@ -168,6 +229,7 @@ class WeatherReplanningService(
                         ),
                     )
                 }
+
                 add(
                     BeliefUpdatedEvent(
                         tick = tick,
@@ -175,6 +237,7 @@ class WeatherReplanningService(
                         belief = "weather_zone_active(${zone.id})",
                     ),
                 )
+
                 add(
                     BeliefUpdatedEvent(
                         tick = tick,
@@ -193,7 +256,34 @@ class WeatherReplanningService(
         )
     }
 
-    private fun routeIntersectsWeatherZone(
+    private fun buildSafeBypassWaypoint(
+        aircraftId: String,
+        aircraftPosition: Position,
+        zone: WeatherZone,
+    ): Waypoint {
+        val vectorToZoneX = zone.center.x - aircraftPosition.x
+        val vectorToZoneY = zone.center.y - aircraftPosition.y
+        val length = hypot(vectorToZoneX, vectorToZoneY).takeIf { it > 0.0 } ?: 1.0
+
+        val perpendicularX = vectorToZoneY / length
+        val perpendicularY = -vectorToZoneX / length
+
+        val bypassDistance = zone.radius * 2.0 + 2.0
+
+        val safePosition =
+            Position(
+                x = aircraftPosition.x + perpendicularX * bypassDistance,
+                y = aircraftPosition.y + perpendicularY * bypassDistance,
+            )
+
+        return Waypoint(
+            name = "SAFE_${zone.id}_$aircraftId",
+            position = safePosition,
+        )
+    }
+
+    private fun routeSegmentIntersectsWeatherZone(
+        aircraftPosition: Position,
         routeWaypoints: List<Waypoint>,
         zone: WeatherZone,
         tick: Int,
@@ -202,8 +292,50 @@ class WeatherReplanningService(
             return false
         }
 
-        return routeWaypoints.any { waypoint ->
-            waypoint.position.distanceTo(zone.center) <= zone.radius
+        if (routeWaypoints.isEmpty()) {
+            return false
         }
+
+        val points =
+            listOf(aircraftPosition) +
+                routeWaypoints.map { waypoint ->
+                    waypoint.position
+                }
+
+        return points.zipWithNext().any { (from, to) ->
+            distanceFromPointToSegment(
+                point = zone.center,
+                segmentStart = from,
+                segmentEnd = to,
+            ) <= zone.radius
+        }
+    }
+
+    private fun distanceFromPointToSegment(
+        point: Position,
+        segmentStart: Position,
+        segmentEnd: Position,
+    ): Double {
+        val segmentDx = segmentEnd.x - segmentStart.x
+        val segmentDy = segmentEnd.y - segmentStart.y
+        val segmentLengthSquared = segmentDx * segmentDx + segmentDy * segmentDy
+
+        if (segmentLengthSquared == 0.0) {
+            return point.distanceTo(segmentStart)
+        }
+
+        val rawProjection =
+            ((point.x - segmentStart.x) * segmentDx + (point.y - segmentStart.y) * segmentDy) /
+                segmentLengthSquared
+
+        val projection = rawProjection.coerceIn(0.0, 1.0)
+
+        val closestPoint =
+            Position(
+                x = segmentStart.x + projection * segmentDx,
+                y = segmentStart.y + projection * segmentDy,
+            )
+
+        return point.distanceTo(closestPoint)
     }
 }
