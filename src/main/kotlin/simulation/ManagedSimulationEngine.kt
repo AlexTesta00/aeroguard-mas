@@ -5,7 +5,7 @@ import domain.ResolutionPlan
 import domain.Scenario
 import domain.SimulationState
 import planning.ResolutionPlanner
-import planning.StripsResolutionPlanner
+import planning.SecondaryConflictAwareResolutionPlanner
 import reasoning.SafetyReasoner
 import replanning.WeatherReplanningDecision
 import replanning.WeatherReplanningService
@@ -21,15 +21,18 @@ class ManagedSimulationEngine(
     private val safetyReasoner: SafetyReasoner,
     private val aircraftMover: AircraftMover = AircraftMover(),
     private val maneuverApplier: ManeuverApplier = ManeuverApplier(),
-    private val predictionHorizonTicks: Int = 6,
+    private val predictionHorizonTicks: Int = 8,
     private val conflictDetector: ConflictDetector =
         ConflictDetector(
             aircraftMover = aircraftMover,
             safetyReasoner = safetyReasoner,
         ),
     private val resolutionPlanner: ResolutionPlanner =
-        StripsResolutionPlanner(
+        SecondaryConflictAwareResolutionPlanner(
             safetyReasoner = safetyReasoner,
+            aircraftMover = aircraftMover,
+            maneuverApplier = maneuverApplier,
+            predictionHorizonTicks = predictionHorizonTicks,
         ),
 ) {
     init {
