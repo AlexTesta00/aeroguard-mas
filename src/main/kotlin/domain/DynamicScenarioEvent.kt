@@ -1,11 +1,20 @@
 package domain
 
+/**
+ * Supported dynamic event kinds that may change scenario conditions during simulation.
+ */
 enum class DynamicScenarioEventType {
     ACTIVATE_WEATHER_ZONE,
     DECLARE_EMERGENCY,
     DECLARE_LOW_FUEL,
 }
 
+/**
+ * Dynamic event scheduled inside a scenario.
+ *
+ * Dynamic events are used to activate weather zones or change aircraft emergency state
+ * while the simulation is running.
+ */
 data class DynamicScenarioEvent(
     val tick: Int,
     val type: DynamicScenarioEventType,

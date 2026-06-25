@@ -3,6 +3,11 @@ package planning
 import domain.Maneuver
 import domain.ManeuverType
 
+/**
+ * Formats a maneuver as a compact planner action string.
+ *
+ * The resulting strings are used in explanations, JSONL events, and GUI plan tables.
+ */
 fun Maneuver.formatAsPlannerAction(): String =
     when (type) {
         ManeuverType.CLIMB ->

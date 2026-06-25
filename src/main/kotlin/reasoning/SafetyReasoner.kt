@@ -4,6 +4,12 @@ import domain.Conflict
 import domain.Maneuver
 import domain.SimulationState
 
+/**
+ * Symbolic safety reasoning interface.
+ *
+ * Implementations answer safety, priority, maneuver feasibility, and explanation
+ * queries using the current simulation state.
+ */
 interface SafetyReasoner {
     fun isConflictUnsafe(
         conflict: Conflict,

@@ -1,5 +1,12 @@
 package domain
 
+/**
+ * Loss of separation detected or predicted between two or more aircraft.
+ *
+ * A conflict records the tick at which it was detected, the involved aircraft, the
+ * measured distances, and optionally the future tick where the unsafe situation is
+ * expected to occur.
+ */
 data class Conflict(
     val id: String,
     val tick: Int,

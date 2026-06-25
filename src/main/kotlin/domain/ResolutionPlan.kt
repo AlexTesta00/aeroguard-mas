@@ -1,5 +1,11 @@
 package domain
 
+/**
+ * Planner output for resolving a conflict or dynamic constraint.
+ *
+ * A resolution plan groups one or more maneuvers with a textual explanation suitable
+ * for CLI output, JSONL logging, and GUI display.
+ */
 data class ResolutionPlan(
     val id: String,
     val conflictId: String,

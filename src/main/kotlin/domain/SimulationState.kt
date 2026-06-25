@@ -1,5 +1,11 @@
 package domain
 
+/**
+ * Immutable simulation snapshot at one tick.
+ *
+ * The state contains all aircraft and environmental information required by conflict
+ * detection, reasoning, planning, and event recording.
+ */
 data class SimulationState(
     val tick: Int,
     val scenarioName: String,

@@ -6,6 +6,12 @@ import java.nio.file.OpenOption
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 
+/**
+ * Event sink that writes simulation events to a UTF-8 JSONL file.
+ *
+ * Parent directories are created automatically and existing files are overwritten to
+ * keep scenario runs reproducible.
+ */
 class JsonlSimulationEventSink(
     private val outputPath: Path,
 ) : SimulationEventSink,

@@ -17,6 +17,10 @@ data class ManagedSimulationRunResult(
     val weatherReplanningDecisions: List<WeatherReplanningDecision> = emptyList(),
 )
 
+/**
+ * Managed simulation engine integrating movement, planning, maneuver application, and
+ * dynamic replanning.
+ */
 class ManagedSimulationEngine(
     private val safetyReasoner: SafetyReasoner,
     private val aircraftMover: AircraftMover = AircraftMover(),

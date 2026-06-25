@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.3.21"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.4.0"
+    id("org.jetbrains.dokka") version "2.2.0"
     application
 }
 
@@ -51,6 +52,25 @@ tasks.test {
 
     testLogging {
         events("passed", "skipped", "failed")
+    }
+}
+
+dokka {
+    dokkaPublications.html {
+        moduleName.set("AeroGuard-MAS")
+        moduleVersion.set(project.version.toString())
+        outputDirectory.set(layout.buildDirectory.dir("dokka/html"))
+        suppressObviousFunctions.set(true)
+        suppressInheritedMembers.set(false)
+        failOnWarning.set(false)
+    }
+
+    dokkaSourceSets.main {
+        sourceLink {
+            localDirectory.set(file("src/main/kotlin"))
+            remoteUrl.set(uri("https://github.com/AlexTesta00/aeroguard-mas/tree/main/src/main/kotlin"))
+            remoteLineSuffix.set("#L")
+        }
     }
 }
 

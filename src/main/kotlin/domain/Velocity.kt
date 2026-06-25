@@ -1,5 +1,11 @@
 package domain
 
+/**
+ * Horizontal speed expressed in simulation units per tick.
+ *
+ * The model is intentionally simple and does not distinguish airspeed, groundspeed, or
+ * climb/descent rate.
+ */
 @JvmInline
 value class Velocity(
     val horizontalUnitsPerTick: Double,

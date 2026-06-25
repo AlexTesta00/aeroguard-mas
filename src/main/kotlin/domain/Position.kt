@@ -2,6 +2,12 @@ package domain
 
 import kotlin.math.sqrt
 
+/**
+ * Two-dimensional point in the simplified airspace.
+ *
+ * Coordinates are abstract simulation units. The model intentionally avoids real-world
+ * geodesy and uses Euclidean distance for conflict detection and movement.
+ */
 data class Position(
     val x: Double,
     val y: Double,

@@ -28,6 +28,12 @@ data class WeatherReplanningDecision(
     val events: List<SimulationEvent>,
 )
 
+/**
+ * Service responsible for weather-zone replanning.
+ *
+ * It detects whether an aircraft route intersects an active weather zone and generates
+ * a reroute plan toward a lateral safe waypoint.
+ */
 class WeatherReplanningService(
     private val safetyReasoner: SafetyReasoner,
 ) {

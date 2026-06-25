@@ -17,6 +17,12 @@ import it.unibo.tuprolog.theory.Theory
 import it.unibo.tuprolog.theory.parsing.ClausesParser
 import it.unibo.tuprolog.core.Integer as LogicInteger
 
+/**
+ * tuProlog-backed implementation of [SafetyReasoner].
+ *
+ * It translates Kotlin domain objects into Prolog facts, loads the airspace safety
+ * theory, and solves symbolic queries for priorities, unsafe pairs, and maneuvers.
+ */
 class TuPrologSafetyReasoner(
     theoryText: String,
 ) : SafetyReasoner {

@@ -2,6 +2,13 @@ package integration
 
 import domain.AgentSnapshot
 
+/**
+ * Static smoke analyzer for Jason AgentSpeak sources.
+ *
+ * It extracts observable BDI concepts and message passing patterns without starting a
+ * full Jason runtime. This keeps CI stable while proving that real `.asl` files exist
+ * and contain BDI-oriented content.
+ */
 class JasonAgentSmokeAnalyzer {
     fun analyze(sources: List<JasonAgentSource>): JasonSmokeReport {
         val expectedNames =

@@ -2,12 +2,18 @@ package integration
 
 import domain.AgentSnapshot
 
+/**
+ * Message delegation extracted from a Jason `.send(...)` call.
+ */
 data class JasonMessageDelegation(
     val from: String,
     val to: String,
     val performative: String,
 )
 
+/**
+ * Result of the Jason source smoke analysis.
+ */
 data class JasonSmokeReport(
     val requiredAgentsPresent: Boolean,
     val bdiConceptsPresent: Boolean,

@@ -89,6 +89,12 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}kdocs/
 
     steps:
       - name: Checkout
@@ -118,8 +124,43 @@ jobs:
       - name: Build release artifact
         run: ./gradlew build --no-daemon
 
+      - name: Generate KDocs
+        run: ./gradlew :dokkaGenerate --no-daemon
+
+      - name: Prepare GitHub Pages site
+        run: |
+          rm -rf site
+          mkdir -p site/kdocs
+          cp -R build/dokka/html/. site/kdocs/
+
+          cat > site/index.html <<'EOF'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta http-equiv="refresh" content="0; url=./kdocs/">
+              <title>AeroGuard-MAS Documentation</title>
+            </head>
+            <body>
+              <p>Redirecting to <a href="./kdocs/">AeroGuard-MAS KDocs</a>.</p>
+            </body>
+          </html>
+          EOF
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload KDocs Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HUSKY: 0
         run: npm run release
+
+      - name: Deploy KDocs to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

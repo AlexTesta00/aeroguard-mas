@@ -4,6 +4,12 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * Loads the required Jason AgentSpeak source files from disk.
+ *
+ * The catalog is intentionally lightweight: it validates that all mandatory agent files
+ * can be read and returns their source for smoke analysis.
+ */
 class JasonAgentCatalog(
     private val agentsDirectory: Path = Path.of("agents"),
 ) {
@@ -41,11 +47,17 @@ class JasonAgentCatalog(
     }
 }
 
+/**
+ * Expected Jason agent descriptor.
+ */
 data class ExpectedJasonAgent(
     val agentName: String,
     val fileName: String,
 )
 
+/**
+ * Exception thrown when Jason source integration fails.
+ */
 class JasonIntegrationException(
     message: String,
     cause: Throwable? = null,
