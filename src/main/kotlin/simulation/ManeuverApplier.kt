@@ -9,6 +9,9 @@ import domain.SimulationState
 import domain.Velocity
 import domain.Waypoint
 
+/**
+ * Applies selected maneuvers physically to a simulation state.
+ */
 class ManeuverApplier {
     fun apply(
         state: SimulationState,

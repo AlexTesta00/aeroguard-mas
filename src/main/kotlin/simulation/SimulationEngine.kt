@@ -20,6 +20,10 @@ data class SimulationRunResult(
         get() = states.last()
 }
 
+/**
+ * Baseline simulation engine that advances aircraft and detects conflicts without
+ * managed planning feedback.
+ */
 class SimulationEngine(
     private val aircraftMover: AircraftMover = AircraftMover(),
     private val conflictDetector: ConflictDetector = ConflictDetector(aircraftMover),

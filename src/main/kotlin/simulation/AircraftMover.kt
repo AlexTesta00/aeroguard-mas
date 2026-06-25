@@ -2,6 +2,9 @@ package simulation
 
 import domain.Aircraft
 
+/**
+ * Moves aircraft one discrete tick along their active route.
+ */
 class AircraftMover {
     fun advanceOneTick(aircraft: Aircraft): Aircraft {
         var position = aircraft.position

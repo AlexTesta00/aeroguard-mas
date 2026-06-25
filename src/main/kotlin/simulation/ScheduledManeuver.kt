@@ -2,6 +2,9 @@ package simulation
 
 import domain.Maneuver
 
+/**
+ * Maneuver scheduled for application at a specific simulation tick.
+ */
 data class ScheduledManeuver(
     val tick: Int,
     val maneuver: Maneuver,

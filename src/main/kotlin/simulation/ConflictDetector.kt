@@ -7,6 +7,12 @@ import domain.SimulationState
 import reasoning.SafetyReasoner
 import reasoning.TuPrologSafetyReasoner
 
+/**
+ * Detects current and predicted conflicts between aircraft.
+ *
+ * The detector combines geometric distance checks with the symbolic safety reasoner
+ * to determine whether a pair should be treated as unsafe.
+ */
 class ConflictDetector(
     private val aircraftMover: AircraftMover = AircraftMover(),
     private val safetyReasoner: SafetyReasoner = TuPrologSafetyReasoner.fromClasspath(),
