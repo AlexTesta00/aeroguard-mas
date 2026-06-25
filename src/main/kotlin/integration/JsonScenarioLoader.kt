@@ -21,6 +21,12 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * JSON implementation of [ScenarioLoader].
+ *
+ * The loader parses scenario files into DTOs and converts them into validated domain
+ * objects. Unknown keys are rejected to keep scenario files explicit and reproducible.
+ */
 class JsonScenarioLoader(
     private val json: Json =
         Json {

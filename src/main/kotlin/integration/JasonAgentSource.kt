@@ -2,6 +2,9 @@ package integration
 
 import java.nio.file.Path
 
+/**
+ * Loaded Jason agent source file with metadata.
+ */
 data class JasonAgentSource(
     val agentName: String,
     val fileName: String,
