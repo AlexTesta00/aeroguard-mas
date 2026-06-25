@@ -2,6 +2,9 @@ package planning
 
 import domain.Maneuver
 
+/**
+ * STRIPS action with preconditions, add effects, delete effects, and optional maneuver.
+ */
 data class StripsAction(
     val name: String,
     val preconditions: Set<Proposition>,

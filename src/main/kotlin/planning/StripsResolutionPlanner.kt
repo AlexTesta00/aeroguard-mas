@@ -8,6 +8,12 @@ import domain.ResolutionPlan
 import domain.SimulationState
 import reasoning.SafetyReasoner
 
+/**
+ * Basic STRIPS-based conflict resolution planner.
+ *
+ * It selects one aircraft, builds candidate maneuver actions, solves a small STRIPS
+ * problem, and converts the resulting actions into a resolution plan.
+ */
 class StripsResolutionPlanner(
     private val safetyReasoner: SafetyReasoner,
     private val stripsPlanner: StripsPlanner = StripsPlanner(),

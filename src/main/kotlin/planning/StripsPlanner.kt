@@ -1,5 +1,11 @@
 package planning
 
+/**
+ * Minimal breadth-first STRIPS planner.
+ *
+ * It searches the finite action space up to a maximum depth and returns the first plan
+ * whose resulting state satisfies the goal propositions.
+ */
 class StripsPlanner {
     fun plan(problem: StripsProblem): List<StripsAction>? {
         if (problem.isGoalSatisfiedBy(problem.initialState)) {

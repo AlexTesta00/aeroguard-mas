@@ -1,5 +1,11 @@
 package planning
 
+/**
+ * STRIPS proposition represented as a validated symbolic atom.
+ *
+ * The companion factory methods centralize the proposition names used by planning tests
+ * and resolution problems.
+ */
 @JvmInline
 value class Proposition(
     val value: String,

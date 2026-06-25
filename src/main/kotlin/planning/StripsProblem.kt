@@ -1,5 +1,8 @@
 package planning
 
+/**
+ * STRIPS planning problem definition.
+ */
 data class StripsProblem(
     val initialState: Set<Proposition>,
     val goal: Set<Proposition>,

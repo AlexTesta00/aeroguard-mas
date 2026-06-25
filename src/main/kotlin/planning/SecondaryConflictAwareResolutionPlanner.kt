@@ -11,6 +11,12 @@ import simulation.AircraftMover
 import simulation.ConflictDetector
 import simulation.ManeuverApplier
 
+/**
+ * Resolution planner that prevents secondary conflicts through forward simulation.
+ *
+ * Candidate maneuvers are checked by the symbolic reasoner and then simulated over a
+ * short horizon. A maneuver is accepted only if it does not introduce new conflicts.
+ */
 class SecondaryConflictAwareResolutionPlanner(
     private val safetyReasoner: SafetyReasoner,
     private val aircraftMover: AircraftMover = AircraftMover(),
