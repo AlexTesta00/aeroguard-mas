@@ -24,6 +24,7 @@
     "kotlin:lint": "gradlew ktlintCheck",
     "kotlin:format": "gradlew ktlintFormat",
     "kotlin:style": "gradlew ktlintFormat ktlintCheck",
+    "docs": "gradlew dokkaGenerate",
     "commit": "cz"
   },
   "config": {
