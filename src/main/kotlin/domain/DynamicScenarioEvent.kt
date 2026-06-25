@@ -1,5 +1,12 @@
 package domain
 
+/**
+ * Dynamic event scheduled inside a scenario.
+ * Supported dynamic event kinds that may change scenario conditions during simulation.
+ *
+ * Dynamic events are used to activate weather zones or change aircraft emergency state
+ * while the simulation is running.
+ */
 enum class DynamicScenarioEventType {
     ACTIVATE_WEATHER_ZONE,
     DECLARE_EMERGENCY,

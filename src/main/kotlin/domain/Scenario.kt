@@ -1,5 +1,11 @@
 package domain
 
+/**
+ * Complete input scenario for an AeroGuard-MAS simulation run.
+ *
+ * A scenario defines aircraft, separation thresholds, sector bounds, optional weather
+ * zones, and optional dynamic events.
+ */
 data class Scenario(
     val name: String,
     val maxTicks: Int,

@@ -1,5 +1,12 @@
 package domain
 
+/**
+ * Rectangular airspace sector used by the discrete simulation.
+ *
+ * The sector defines horizontal bounds and altitude limits. The current simulation does
+ * not model professional ATC sector complexity; this class provides a bounded context
+ * for scenarios and future validation.
+ */
 data class AirspaceSector(
     val id: String,
     val minX: Double,

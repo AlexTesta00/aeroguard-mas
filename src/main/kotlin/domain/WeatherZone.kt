@@ -1,5 +1,10 @@
 package domain
 
+/**
+ * Circular weather constraint that may become active during a scenario.
+ *
+ * Active weather zones are treated as forbidden route areas by the replanning layer.
+ */
 data class WeatherZone(
     val id: String,
     val center: Position,

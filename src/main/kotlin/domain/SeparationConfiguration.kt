@@ -1,5 +1,11 @@
 package domain
 
+/**
+ * Minimum separation thresholds used by conflict detection.
+ *
+ * Horizontal separation is expressed in simulation coordinate units. Vertical separation
+ * is expressed in feet.
+ */
 data class SeparationConfiguration(
     val horizontal: Double,
     val verticalFeet: Int,
