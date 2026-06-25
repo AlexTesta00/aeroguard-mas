@@ -6,6 +6,12 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 
+/**
+ * Converts a simulation event to the JSON object used by the JSONL event stream.
+ *
+ * The conversion is explicit to keep the external GUI contract stable and independent
+ * from internal Kotlin domain classes.
+ */
 fun SimulationEvent.toJsonObject(): JsonObject =
     when (this) {
         is AircraftStateEvent ->
@@ -116,4 +122,7 @@ fun SimulationEvent.toJsonObject(): JsonObject =
             }
     }
 
+/**
+ * Serializes a simulation event as a single JSONL line.
+ */
 fun SimulationEvent.toJsonLine(): String = toJsonObject().toString()

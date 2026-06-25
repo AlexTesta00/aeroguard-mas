@@ -7,6 +7,13 @@ import explanation.DecisionExplanation
 import planning.formatAsPlannerAction
 import simulation.SimulationRunResult
 
+/**
+ * Converts a simulation run into a stream of structured simulation events.
+ *
+ * The recorder does not make decisions and does not mutate the simulation. It only
+ * serializes states, routes, conflicts, plans, additional dynamic events, and
+ * explanations to the configured sink.
+ */
 class SimulationEventRecorder(
     private val sink: SimulationEventSink,
 ) {
