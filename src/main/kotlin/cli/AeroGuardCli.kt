@@ -23,13 +23,6 @@ import simulation.ScheduledManeuver
 import java.nio.file.Path
 import kotlin.system.exitProcess
 
-/**
- * Command-line entry point for AeroGuard-MAS.
- *
- * The CLI loads a scenario, runs the managed simulation pipeline, prints a human-readable
- * summary of conflicts and decisions, and writes structured JSONL events for the GUI.
- * It also exposes the explanation layer through the `--explain` flag.
- */
 object AppInfo {
     const val NAME: String = "AeroGuard-MAS"
     const val VERSION: String = "1.0-SNAPSHOT"
@@ -50,6 +43,16 @@ data class CliOptions(
     val explain: Boolean = false,
 )
 
+/**
+ * Parses supported AeroGuard CLI arguments.
+ *
+ * Supported arguments are `--scenario`, `--events`, and `--explain`.
+ *
+ * @param args raw command-line arguments.
+ * @return validated CLI options.
+ * @throws IllegalArgumentException if a required argument value is missing.
+ * @throws IllegalStateException if an unknown argument is provided.
+ */
 fun parseCliOptions(args: Array<String>): CliOptions {
     var scenarioPath: Path? = null
     var eventsPath: Path? = null
@@ -87,14 +90,11 @@ fun parseCliOptions(args: Array<String>): CliOptions {
 }
 
 /**
- * Parses supported AeroGuard CLI arguments.
+ * Command-line entry point for AeroGuard-MAS.
  *
- * Supported arguments are `--scenario`, `--events`, and `--explain`.
- *
- * @param args raw command-line arguments.
- * @return validated CLI options.
- * @throws IllegalArgumentException if a required argument value is missing.
- * @throws IllegalStateException if an unknown argument is provided.
+ * The CLI loads a scenario, runs the managed simulation pipeline, prints a human-readable
+ * summary of conflicts and decisions, and writes structured JSONL events for the GUI.
+ * It also exposes the explanation layer through the `--explain` flag.
  */
 fun main(args: Array<String>) {
     println(AppInfo.banner())
