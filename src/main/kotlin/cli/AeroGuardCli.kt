@@ -23,6 +23,13 @@ import simulation.ScheduledManeuver
 import java.nio.file.Path
 import kotlin.system.exitProcess
 
+/**
+ * Command-line entry point for AeroGuard-MAS.
+ *
+ * The CLI loads a scenario, runs the managed simulation pipeline, prints a human-readable
+ * summary of conflicts and decisions, and writes structured JSONL events for the GUI.
+ * It also exposes the explanation layer through the `--explain` flag.
+ */
 object AppInfo {
     const val NAME: String = "AeroGuard-MAS"
     const val VERSION: String = "1.0-SNAPSHOT"
@@ -31,12 +38,6 @@ object AppInfo {
 }
 
 /**
- * Command-line entry point for AeroGuard-MAS.
- * The CLI loads a scenario, runs the managed simulation pipeline, prints a human-readable
- * summary of conflicts and decisions, and writes structured JSONL events for the GUI.
- * It also exposes the explanation layer through the `--explain` flag.
- *
- *
  * Parsed command-line options for running an AeroGuard scenario.
  *
  * @property scenarioPath optional JSON scenario file to load.
