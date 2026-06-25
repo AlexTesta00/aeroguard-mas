@@ -18,7 +18,6 @@ import planning.formatAsPlannerAction
 import reasoning.SafetyReasoner
 import reasoning.TuPrologSafetyReasoner
 import replanning.WeatherReplanningDecision
-import replanning.WeatherReplanningService
 import simulation.ManagedSimulationEngine
 import simulation.ScheduledManeuver
 import java.nio.file.Path
@@ -31,6 +30,19 @@ object AppInfo {
     fun banner(): String = "$NAME $VERSION - Multi-Agent Airspace Conflict Manager"
 }
 
+/**
+ * Command-line entry point for AeroGuard-MAS.
+ * The CLI loads a scenario, runs the managed simulation pipeline, prints a human-readable
+ * summary of conflicts and decisions, and writes structured JSONL events for the GUI.
+ * It also exposes the explanation layer through the `--explain` flag.
+ *
+ *
+ * Parsed command-line options for running an AeroGuard scenario.
+ *
+ * @property scenarioPath optional JSON scenario file to load.
+ * @property eventsPath optional JSONL output file for simulation events.
+ * @property explain whether symbolic and planning explanations should be printed.
+ */
 data class CliOptions(
     val scenarioPath: Path? = null,
     val eventsPath: Path? = null,
@@ -73,6 +85,16 @@ fun parseCliOptions(args: Array<String>): CliOptions {
     )
 }
 
+/**
+ * Parses supported AeroGuard CLI arguments.
+ *
+ * Supported arguments are `--scenario`, `--events`, and `--explain`.
+ *
+ * @param args raw command-line arguments.
+ * @return validated CLI options.
+ * @throws IllegalArgumentException if a required argument value is missing.
+ * @throws IllegalStateException if an unknown argument is provided.
+ */
 fun main(args: Array<String>) {
     println(AppInfo.banner())
 
