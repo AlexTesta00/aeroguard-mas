@@ -1,3 +1,9 @@
+## [0.5.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.4.0...v0.5.0) (2026-06-25)
+
+### Features
+
+* **replanning:** added kotlin docs for replanning ([62dbf9b](https://github.com/AlexTesta00/aeroguard-mas/commit/62dbf9b6acc3599dd78ce4937aa7d32d7624ddb6))
+
 ## [0.4.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.3.0...v0.4.0) (2026-06-24)
 
 ### Features
