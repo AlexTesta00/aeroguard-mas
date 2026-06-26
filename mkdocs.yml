@@ -1,0 +1,54 @@
+site_name: AeroGuard-MAS
+site_description: Multi-Agent Airspace Conflict Manager documentation
+site_author: Alex Testa
+repo_url: https://github.com/AlexTesta00/aeroguard-mas
+repo_name: AlexTesta00/aeroguard-mas
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+    - toc.integrate
+
+plugins:
+  - search
+  - mermaid2:
+      version: 10.9.1
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - tables
+  - fenced_code
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+
+nav:
+  - Introduction:
+    - Home: index.md
+    - Abstract: abstract.md
+  - Architecture:
+    - Domain: domain.md
+    - Design: design.md
+  - Implementation:
+    - Tech Stack: tech-stack.md
+    - Code: code.md
+    - Testing: testing.md
+  - Deployment: deployment.md
+  - Sprint: sprint.md
+  - Conclusion: conclusion.md
