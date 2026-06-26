@@ -1,3 +1,9 @@
+## [0.6.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.5.0...v0.6.0) (2026-06-26)
+
+### Features
+
+* **mkdocs:** added mkdocs configuration ([a6a6729](https://github.com/AlexTesta00/aeroguard-mas/commit/a6a67294739c494421dbd92ebd26eb28701ef737))
+
 ## [0.5.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.4.0...v0.5.0) (2026-06-25)
 
 ### Features
