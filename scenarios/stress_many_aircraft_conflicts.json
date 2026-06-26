@@ -1,0 +1,178 @@
+{
+  "name": "stress_many_aircraft_conflicts",
+  "maxTicks": 24,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "aircraft": [
+    {
+      "id": "AZA101",
+      "x": 0.0,
+      "y": 6.0,
+      "altitude": 30000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "CROSS_A",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "EXIT_A",
+          "x": 16.0,
+          "y": 6.0
+        }
+      ]
+    },
+    {
+      "id": "BAW202",
+      "x": 16.0,
+      "y": 6.0,
+      "altitude": 30000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "CROSS_B",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "EXIT_B",
+          "x": 0.0,
+          "y": 6.0
+        }
+      ]
+    },
+    {
+      "id": "DLH303",
+      "x": 8.0,
+      "y": 0.0,
+      "altitude": 32000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "CROSS_C",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "EXIT_C",
+          "x": 8.0,
+          "y": 13.0
+        }
+      ]
+    },
+    {
+      "id": "IBE404",
+      "x": 8.0,
+      "y": 13.0,
+      "altitude": 32000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "CROSS_D",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "EXIT_D",
+          "x": 8.0,
+          "y": 0.0
+        }
+      ]
+    },
+    {
+      "id": "SWR505",
+      "x": 1.0,
+      "y": 1.0,
+      "altitude": 34000,
+      "speed": 1.0,
+      "priority": "high",
+      "emergency": false,
+      "route": [
+        {
+          "name": "CROSS_E",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "EXIT_E",
+          "x": 15.0,
+          "y": 11.0
+        }
+      ]
+    },
+    {
+      "id": "RYR606",
+      "x": 15.0,
+      "y": 11.0,
+      "altitude": 34000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "CROSS_F",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "EXIT_F",
+          "x": 1.0,
+          "y": 1.0
+        }
+      ]
+    },
+    {
+      "id": "EZY707",
+      "x": 1.0,
+      "y": 11.0,
+      "altitude": 36000,
+      "speed": 0.9,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "CROSS_G",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "EXIT_G",
+          "x": 15.0,
+          "y": 1.0
+        }
+      ]
+    },
+    {
+      "id": "KLM808",
+      "x": 15.0,
+      "y": 1.0,
+      "altitude": 36000,
+      "speed": 0.9,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "CROSS_H",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "EXIT_H",
+          "x": 1.0,
+          "y": 11.0
+        }
+      ]
+    }
+  ]
+}
