@@ -26,7 +26,7 @@ dependencies {
     implementation("it.unibo.tuprolog:parser-theory-jvm:1.1.5")
     implementation("io.github.jason-lang:jason:3.1.2")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.14.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:6.1.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
