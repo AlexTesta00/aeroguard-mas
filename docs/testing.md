@@ -194,8 +194,6 @@ Tests are organized under:
 src/test/kotlin
 ```
 
-Python GUI tests, where present, are expected under the GUI folder. Exact Python test file names are **To be completed** if the repository does not currently include them.
-
 ## Running Tests
 
 Run all Kotlin tests:

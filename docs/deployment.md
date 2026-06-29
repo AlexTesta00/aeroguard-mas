@@ -161,7 +161,7 @@ GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 HUSKY: 0
 ```
 
-This indicates that release automation likely uses a Node-based release tool. The exact package and release strategy are **To be completed** from `package.json`.
+This indicates that release automation likely uses a Node-based release tool.
 
 ## Documentation Deployment
 
@@ -183,8 +183,6 @@ The target documentation URL is:
 ```text
 https://alextesta00.github.io/aeroguard-mas/kdocs/
 ```
-
-If this has not yet been merged into the repository, the final deployment status is **To be completed**.
 
 ## MkDocs Documentation Deployment
 
@@ -252,7 +250,6 @@ The workflow improves the project by:
 
 - No Docker packaging is currently documented.
 - The GUI is not deployed as a hosted application.
-- Release automation details depend on the Node configuration and are **To be completed**.
 - KDocs publishing depends on GitHub Pages configuration.
 - No binary distribution strategy is documented yet.
 

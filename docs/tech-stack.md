@@ -183,8 +183,6 @@ The release job is configured for the `main` branch and can generate documentati
 
 Node.js and npm are used in the release job. The workflow runs `npm ci` and `npm run release`, which suggests a release automation tool such as semantic-release is expected.
 
-Exact release tooling details are **To be completed** if the repository's `package.json` is not documented here.
-
 ## Runtime Environment
 
 The Kotlin core runs on the JVM. The CI configuration uses Java 25 through Temurin.

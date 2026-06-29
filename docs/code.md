@@ -274,7 +274,7 @@ The Prolog theory encodes symbolic rules such as:
 - unsafe pair;
 - explanation facts.
 
-Exact predicate details are documented in the Prolog source file and comments. If further predicate-level documentation is required, it is **To be completed** in a dedicated Prolog reference page.
+Exact predicate details are documented in the Prolog source file and comments.
 
 ## Symbolic Reasoning Interaction
 
