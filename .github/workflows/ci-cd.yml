@@ -116,13 +116,21 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build release artifact
-        run: ./gradlew build --no-daemon
+        run: ./gradlew clean build shadowJar --no-daemon
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HUSKY: 0
         run: npm run release
+
+      - name: Upload CLI JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aeroguard-mas-cli-${{ github.sha }}
+          path: build/libs/aeroguard-mas-cli-*-all.jar
+          if-no-files-found: error
+          retention-days: 30
 
   deploy-docs:
     name: Deploy Docs
