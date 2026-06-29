@@ -1,0 +1,118 @@
+{
+  "name": "stress_weather_multi_waypoint",
+  "maxTicks": 28,
+  "separation": {
+    "horizontal": 5.0,
+    "vertical": 1000
+  },
+  "weatherZones": [
+    {
+      "id": "WX_STORM_1",
+      "x": 8.0,
+      "y": 6.0,
+      "radius": 2.2,
+      "activeFromTick": 5
+    }
+  ],
+  "dynamicEvents": [
+    {
+      "tick": 5,
+      "type": "activate_weather_zone",
+      "targetId": "WX_STORM_1"
+    }
+  ],
+  "aircraft": [
+    {
+      "id": "ITA410",
+      "x": 0.0,
+      "y": 0.0,
+      "altitude": 30000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "I1",
+          "x": 2.0,
+          "y": 1.0
+        },
+        {
+          "name": "I2",
+          "x": 4.0,
+          "y": 2.5
+        },
+        {
+          "name": "I3",
+          "x": 6.0,
+          "y": 4.5
+        },
+        {
+          "name": "I4_STORM_EDGE",
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "name": "I5",
+          "x": 10.0,
+          "y": 7.5
+        },
+        {
+          "name": "I6",
+          "x": 13.0,
+          "y": 9.0
+        },
+        {
+          "name": "I7_EXIT",
+          "x": 16.0,
+          "y": 10.0
+        }
+      ]
+    },
+    {
+      "id": "DLH902",
+      "x": 0.0,
+      "y": 11.0,
+      "altitude": 32000,
+      "speed": 1.0,
+      "priority": "normal",
+      "emergency": false,
+      "route": [
+        {
+          "name": "D1",
+          "x": 2.0,
+          "y": 10.0
+        },
+        {
+          "name": "D2",
+          "x": 4.0,
+          "y": 9.0
+        },
+        {
+          "name": "D3",
+          "x": 6.0,
+          "y": 8.0
+        },
+        {
+          "name": "D4",
+          "x": 8.0,
+          "y": 8.0
+        },
+        {
+          "name": "D5",
+          "x": 11.0,
+          "y": 8.5
+        },
+        {
+          "name": "D6",
+          "x": 14.0,
+          "y": 9.5
+        },
+        {
+          "name": "D7_EXIT",
+          "x": 17.0,
+          "y": 11.0
+        }
+      ]
+    }
+  ]
+}

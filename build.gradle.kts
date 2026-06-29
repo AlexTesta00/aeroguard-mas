@@ -1,8 +1,11 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
-    kotlin("jvm") version "2.3.21"
+    kotlin("jvm") version "2.4.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.4.0"
     id("org.jetbrains.dokka") version "2.2.0"
+    id("com.gradleup.shadow") version "9.4.3"
     application
 }
 
@@ -25,8 +28,7 @@ dependencies {
     implementation("it.unibo.tuprolog:solve-classic-jvm:1.1.5")
     implementation("it.unibo.tuprolog:parser-theory-jvm:1.1.5")
     implementation("io.github.jason-lang:jason:3.1.2")
-
-    testImplementation("org.junit.jupiter:junit-jupiter:5.14.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:6.1.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -45,6 +47,22 @@ sourceSets {
 
 application {
     mainClass.set("cli.AeroGuardCliKt")
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    archiveBaseName.set("aeroguard-mas-cli")
+    archiveClassifier.set("all")
+    archiveVersion.set(project.version.toString())
+
+    mergeServiceFiles()
+
+    manifest {
+        attributes["Main-Class"] = "cli.AeroGuardCliKt"
+    }
+}
+
+tasks.build {
+    dependsOn(tasks.named("shadowJar"))
 }
 
 tasks.test {

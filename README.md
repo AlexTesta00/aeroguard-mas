@@ -115,6 +115,11 @@ Run a specific scenario:
 ./gradlew run --args="--scenario scenarios/simple_conflict.json"
 ```
 
+Run a specific scenario through jar:
+```bash
+java -jar aeroguard-mas-1.0.0.jar --scenario scenarios/simple_conflict.json
+```
+
 Run a scenario with explanations:
 
 ```bash
