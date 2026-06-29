@@ -1,3 +1,10 @@
+## [0.6.1](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.6.0...v0.6.1) (2026-06-29)
+
+### Bug Fixes
+
+* **deps:** update gradle dependencies to v6 ([eb8e9e3](https://github.com/AlexTesta00/aeroguard-mas/commit/eb8e9e3bf83c8bad54f0ac99a58df965b8b84304))
+* **deps:** update gradle dependencies to v6.1.1 ([5dde997](https://github.com/AlexTesta00/aeroguard-mas/commit/5dde99719312f46500b9b3ffb6dce00a28c2dc9d))
+
 ## [0.6.0](https://github.com/AlexTesta00/aeroguard-mas/compare/v0.5.0...v0.6.0) (2026-06-26)
 
 ### Features
